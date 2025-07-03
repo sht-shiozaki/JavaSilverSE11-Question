@@ -15,13 +15,13 @@
                 <form th:action="@{/list/logout}" method="post">
                     <input type="submit" value="ログアウト" class="logoutButton">
                 </form>
-                <form th:action="@{/list/dashboard}" method="get">
+                <form th:action="@{/list/home}" method="get">
                     <input type="submit" value="戻る" class="headerButton">
                 </form>
             </div>
 
-            <!--dashboardの場合-->
-            <div th:case="'dashboard'" class="headerRight">
+            <!--homeの場合-->
+            <div th:case="'home'" class="headerRight">
                 <button type="submit" class="headerButton" id="todo_button" onclick="openTodoDialog(this)">ToDo</button> 
                 <form th:action="@{/list/logout}" method="post">
                     <input type="submit" value="ログアウト" class="logoutButton">
