@@ -14,7 +14,7 @@ public interface QuestionAnswerRepository extends JpaRepository<UserAnswer, Long
     // 二日前の招待コードを削除
     @Transactional
     @Modifying
-    @Query("DELETE FROM user_answers u WHERE u.userId = :userId")
+    @Query("DELETE FROM UserAnswer  u WHERE u.userId = :userId")
     void deleteUserAnswer(@Param("userId") String userId);
 
 }

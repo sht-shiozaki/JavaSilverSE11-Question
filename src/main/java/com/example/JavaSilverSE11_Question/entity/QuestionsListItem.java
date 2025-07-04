@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "question_list_items")
@@ -28,7 +29,7 @@ public class QuestionsListItem {
     @Column(nullable = false) // 問題文
     private String question;
 
-    @ElementCollection
+    @Transient
     @Column(nullable = false) // 選択文（複数）
     private List<ChoicesDTO> choicesText;
 

@@ -1,11 +1,15 @@
 package com.example.JavaSilverSE11_Question.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.JavaSilverSE11_Question.entity.QuestionsList;
 import com.example.JavaSilverSE11_Question.entity.QuestionsListItem;
@@ -20,6 +24,7 @@ public class QuestionsListService {
     @Autowired
     private QuestionsListRepository questionsListRepository;
 
+    // 問題リスト作成
     public QuestionsList createQuestionList(String userId) {
         QuestionsList questionsList = new QuestionsList();
         questionsList.setUserId(userId);
@@ -30,5 +35,29 @@ public class QuestionsListService {
         // 問題文の保存
         questionsListRepository.save(questionsList); // Repository側でもentityをimportすること
         return questionsList;
+    }
+
+    public List setFilesPath(QuestionsList questionsList, int qNo) throws IOException {
+        List<String> files = new ArrayList<>();
+
+        // qNo は QuestionsListItem の id と比較（Long型なのでint→Long変換）
+        Long targetId = Long.valueOf(qNo);
+
+        String fileName = questionsList.getItems().stream()
+                .filter(item -> item.getId().equals(targetId))
+                .map(QuestionsListItem::getFileName)
+                .findFirst()
+                .orElse(null); // 空ならNull
+
+        if (fileName != null && !fileName.isEmpty()) {
+            String[] splitFiles = fileName.split(","); // カンマ区切りで分割してリストに格納
+            for (String f : splitFiles) {
+                f = f.trim(); // 前後の空白も削除
+                Path path = Paths.get("src/main/resources/static/file/" + f);
+                String content = Files.readString(path);
+                files.add(content);
+            }
+        }
+        return files;
     }
 }

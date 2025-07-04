@@ -28,6 +28,7 @@ public class QuestionsListItemService {
     @Autowired
     private AnswerRepository answerRepository;
 
+    // 問題リストの詳細作成
     public List<QuestionsListItem> createQuestionListItems(QuestionsList questionList) {
         List<Questions> questions = questionRepository.findAll(); // 問題文取得
         Collections.shuffle(questions); // ← 順番をランダムに変更

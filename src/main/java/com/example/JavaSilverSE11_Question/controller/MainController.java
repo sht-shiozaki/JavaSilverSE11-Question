@@ -9,7 +9,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import javax.imageio.IIOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Io;
 import org.springframework.data.jpa.domain.QAbstractAuditable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -71,9 +74,7 @@ class QuestionController {
     private QuestionsListService QLService;
 
     @PostMapping("/mockExam")
-    public String showhome(HttpSession session, Model model, @RequestParam String qNo) throws Exception { // ここでsessionは既存のセッション
-                                                                                                          // or
-                                                                                                          // 新規セッションを取得
+    public String showhome(HttpSession session, Model model, @RequestParam String qNo) throws IOException {
         String userId = (String) session.getAttribute("userId");
         // ログイン情報が無ければログイン画面へ
         if (userId == null) {
@@ -84,12 +85,14 @@ class QuestionController {
         try {
             List<UserAnswer> answer = QAService.userAnswer(userId);
             QuestionsList QuestionsList = QLService.createQuestionList(userId);
+            List filesPath = QLService.setFilesPath(QuestionsList, Integer.parseInt(qNo));
 
             session.setAttribute("ql", QuestionsList);
             session.setAttribute("answer", answer);
             session.setAttribute("qNo", qNo); // 初回問題No(1)
+            session.setAttribute("filesPath", filesPath);
             model.addAttribute("questionList", QuestionsList);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
         }
