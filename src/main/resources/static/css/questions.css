@@ -1,0 +1,12 @@
+.questionArea {
+    display: flex;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.NextBackArea {
+    display: flex;
+    justify-content: center; /* または space-between/space-around */
+    gap: 20px; /* ボタン間のスペース */
+    margin-top: 4px;
+}

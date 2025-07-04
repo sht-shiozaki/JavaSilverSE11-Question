@@ -2,13 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
-        <title>タスク管理アプリケーション</title>
-        <link th:href="@{/header.css}" rel="stylesheet">
+        <title>JavaSilverSE11</title>
+        <link th:href="@{/css/header.css}" rel="stylesheet">
     </head>
-
     <body class="mainHeader">
         <!-- headerのフラグメント作成⇒他のHTMLで使用できるようにする -->
-<<<<<<< HEAD
 	    <div th:replace="header :: Header"></div>
+
+        <h1>JavaSilverSE11</h1>
+        <form action="#" th:action="@{/question/mockExam}" method="post">
+            <input type="hidden" name="userId" th:value="${userId}" />
+            <input type="hidden" name="qNo" th:value="1" />
+            <button type="submit">模擬試験</button>
+        </form>
+
+        <form action="#" th:action="@{/question/qa}" method="post">
+            <input type="hidden" name="userId" th:value="${userId}" />
+            <button type="submit">一問一答</button>
+        </form>
     </body>
 </html>

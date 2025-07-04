@@ -45,7 +45,7 @@ public class HomeController {
         Optional<Registry> user = registryService.login(email, password);
         if (user.isPresent()) {
             session.setAttribute("userId", user.get().getUserId());
-            return "redirect:/list/dashboard"; // user/dashboardの@getへ
+            return "redirect:/main/home";
         } else {
             session.invalidate();
             model.addAttribute("error", "ユーザー名かパスワードが違います");

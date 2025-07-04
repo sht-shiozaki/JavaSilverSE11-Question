@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>JavaSilverSE11</title>
+        <link th:href="@{/css/header.css}" rel="stylesheet">
+        <link th:href="@{/css/questions.css}" rel="stylesheet">
+    </head>
+    <body class="mainHeader">
+        <!-- headerのフラグメント作成⇒他のHTMLで使用できるようにする -->
+	    <div th:replace="header :: Header"></div>
+        <div class="question">
+            <div class="questionArea" th:if="${questionList != null}">
+                <div th:with="currentQNo=${session.qNo},currentItem=${#lists.find(questionList.items, i -> i.no == currentQNo)}">
+                <pre id="questionList" th:text="${questionList}"></pre> <!-- <pre> タグでインデント・改行などを保ったまま表示 -->
+            </div>
+
+            <div class="selectArea">
+                
+
+            </div>
+            <div class="NextBackArea">
+                <div class="BackQuestion">
+                    <form action="#" th:action="@{/main/Back}" method="post">
+                        <input type="hidden" name="userId" th:value="${userId}" />
+                        <button type="submit">戻る</button>
+                    </form>
+                </div>
+                <div class="NextQuestion">
+                    <form action="#" th:action="@{/main/Next}" method="post">
+                        <input type="hidden" name="userId" th:value="${userId}" />
+                        <button type="submit">次へ</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
