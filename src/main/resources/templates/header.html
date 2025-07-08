@@ -10,20 +10,32 @@
         <!--ページで表示を変更する-->
         <div th:switch="${currentPage}" class="header">
             <div class="headerLeft"></div>
-            <!--mypageの場合-->
+            <!-- mypageの場合 -->
             <div th:case="'mypage'" class="headerRight">
-                <form th:action="@{/list/logout}" method="post">
+                <form th:action="@{/main/logout}" method="post">
                     <input type="submit" value="ログアウト" class="logoutButton">
                 </form>
-                <form th:action="@{/list/home}" method="get">
+                <form th:action="@{/main/home}" method="get">
                     <input type="submit" value="戻る" class="headerButton">
                 </form>
             </div>
 
-            <!--homeの場合-->
+            <!-- homeの場合 -->
             <div th:case="'home'" class="headerRight">
-                <button type="submit" class="headerButton" id="todo_button" onclick="openTodoDialog(this)">ToDo</button> 
-                <form th:action="@{/list/logout}" method="post">
+                <form th:action="@{/main/logout}" method="post">
+                    <input type="submit" value="ログアウト" class="logoutButton">
+                </form>
+                <form th:action="@{/mypage}" method="get">
+                    <input type="submit" value="マイページ" class="headerButton">
+                </form>
+            </div>
+
+            <!-- questionの場合 -->
+            <div th:case="'question'" class="headerRight">
+                <!-- タイマー表示 -->
+                <div id="timer" class="timer">残り時間: <span id="timeDisplay">--:--</span></div>
+                <button type="submit" class="headerButton" id="todo_button" onclick="openTodoDialog(this)">終了</button>
+                <form th:action="@{/main/logout}" method="post">
                     <input type="submit" value="ログアウト" class="logoutButton">
                 </form>
                 <form th:action="@{/mypage}" method="get">

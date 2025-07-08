@@ -14,7 +14,7 @@
                 <!-- 問題No-->
                 <h3 th:text="'問 ' + ${session.qNo}"></h3>
                 <!-- ファイル名表示 -->
-                <div th:if="${session.filesPath != null}">
+                <div th:if="${session.filesPath != null and !#lists.isEmpty(session.filesPath)}">
                     <p id="text-1">次のコードがあります</p>
                     <div class="fileDisplay">
                         <pre id="files" th:each="file : ${session.filesPath}" th:text="${file}"></pre>
@@ -27,8 +27,9 @@
             </div>
 
             <div class="selectArea">
-                <form th:action="@{/question/next}" method="post">
+                <form th:action="@{/question/next}" method="post" onsubmit="saveTimeToHidden()">
                     <input type="hidden" name="userId" th:value="${userId}" />
+                    <input type="hidden" name="remainingTime" id="remainingTimeField" />
                     <div class="choice">
                         <ul style="list-style-type: none; padding-left: 0;">
                         <li th:each="choice : ${DQ.choicesText}">
@@ -53,5 +54,9 @@
                 </form>
             </div>
         </div>
+        <script th:inline="javascript">
+            window.remainingSeconds = [[${remainingTime}]]; // サーバーから受け取った残り秒数
+        </script>
+        <script th:src="@{/js/header.js}" defer></script>
     </body>
 </html>

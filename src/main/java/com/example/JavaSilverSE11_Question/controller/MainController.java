@@ -40,12 +40,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/main") // URLの先頭部分を指定
 public class MainController {
 
-    //
-    // @Autowired
-    // private TaskItemService TIService;
-    // @Autowired
-    // private TaskItemRepository taskItemRepository;
-
     @GetMapping("/home")
     public String showhome(HttpSession session, Model model) { // ここでsessionは既存のセッション or 新規セッションを取得
         String userId = (String) session.getAttribute("userId");
@@ -54,6 +48,7 @@ public class MainController {
             model.addAttribute("error", "ユーザー情報が見つかりませんでした");
             return "redirect:/login";
         }
+        model.addAttribute("currentPage", "home");// ヘッダー
         return "home";
     }
 
@@ -97,6 +92,12 @@ class QuestionController {
             session.setAttribute("qNo", qNo); // 初回問題No(1)
             session.setAttribute("filesPath", filesPath);
             model.addAttribute("DQ", DisplayQuestion);
+
+            // タイマー設定
+            int initialTime = 600; // 例：10分（600秒）
+            session.setAttribute("remainingTime", initialTime);
+            model.addAttribute("remainingTime", initialTime);
+            model.addAttribute("currentPage", "question");
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
@@ -107,6 +108,7 @@ class QuestionController {
     @PostMapping("/next")
     // required = false:チェックがない時はNullになる
     public String nextQuestion(HttpSession session, Model model,
+            @RequestParam int remainingTime,
             @RequestParam String action,
             @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices) throws IOException {
         String userId = (String) session.getAttribute("userId");
@@ -136,6 +138,11 @@ class QuestionController {
             session.setAttribute("filesPath", filesPath);
             model.addAttribute("DQ", DisplayQuestion);
             model.addAttribute("NSC", NoSelectedChoices); // 問題Noでチェックしたデータ
+
+            // タイマー引継ぎ
+            // Integer remaining = (Integer) session.getAttribute("remainingTime");
+            model.addAttribute("remainingTime", remainingTime);
+            model.addAttribute("currentPage", "question");
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");

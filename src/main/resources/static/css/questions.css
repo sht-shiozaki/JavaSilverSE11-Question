@@ -29,11 +29,20 @@
 
 .NextBackArea {
     display: flex;
-    justify-content: center; /* または space-between/space-around */
+    justify-content: flex-start;
     gap: 20px; /* ボタン間のスペース */
     margin-top: 4px;
 }
 
 #text-1, #text-2 {
     font-size: 16px;
+    margin-bottom: 4px;
+}
+
+#files {
+    font-size: 12px;
+}
+
+ul {
+    margin-top: 4px;
 }
