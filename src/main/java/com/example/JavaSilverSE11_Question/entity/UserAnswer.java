@@ -2,40 +2,34 @@ package com.example.JavaSilverSE11_Question.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
 // userの解答用紙
 @Entity
 @Table(name = "user_answers") // ← テーブル名に合わせて変更
+@IdClass(UserAnswerId.class) // 複合主キークラスを定義
 public class UserAnswer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // インクルメント
-    private Long id;
-
     @Column(nullable = false)
     private String userId;
 
+    @Id
     @Column(nullable = false) // 問題ID
-    private Long questionId;
+    private String questionId;
 
-    @Column(nullable = false) // 解答
-    private Long choiceId;
+    @Column() // 解答
+    private String choiceId;
 
     @Column(nullable = false) // 回答済みか
     private boolean answered; // 初期値 false（Javaの仕様）
 
-    // --- getter/setter ---
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "no") // 表示No（）
+    private Integer no;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // --- getter/setter ---
 
     public String getUserId() {
         return userId;
@@ -45,19 +39,19 @@ public class UserAnswer {
         this.userId = userId;
     }
 
-    public Long getQuestionId() {
+    public String getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(Long questionId) {
+    public void setQuestionId(String questionId) {
         this.questionId = questionId;
     }
 
-    public Long getChoiceId() {
+    public String getChoiceId() {
         return choiceId;
     }
 
-    public void setChoiceId(Long choiceId) {
+    public void setChoiceId(String choiceId) {
         this.choiceId = choiceId;
     }
 
@@ -67,5 +61,13 @@ public class UserAnswer {
 
     public void setAnswered(boolean answered) {
         this.answered = answered;
+    }
+
+    public Integer getNo() {
+        return no;
+    }
+
+    public void setNo(Integer no) {
+        this.no = no;
     }
 }

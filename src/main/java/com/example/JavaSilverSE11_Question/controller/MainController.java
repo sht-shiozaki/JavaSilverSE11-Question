@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.JavaSilverSE11_Question.entity.QuestionsList;
 import com.example.JavaSilverSE11_Question.entity.QuestionsListItem;
 import com.example.JavaSilverSE11_Question.entity.UserAnswer;
-import com.example.JavaSilverSE11_Question.service.QuestionAnswerService;
+import com.example.JavaSilverSE11_Question.service.UserAnswerService;
 import com.example.JavaSilverSE11_Question.service.QuestionsListService;
 
 // import com.example.JavaSilverSE11_Question.entity.TaskItem;
@@ -69,7 +69,7 @@ public class MainController {
 class QuestionController {
 
     @Autowired
-    private QuestionAnswerService QAService;
+    private UserAnswerService UAService;
 
     @Autowired
     private QuestionsListService QLService;
@@ -85,7 +85,7 @@ class QuestionController {
         }
 
         try {
-            List<UserAnswer> answer = QAService.userAnswer(userId);
+            List<UserAnswer> answer = UAService.userAnswer(userId); // user解答をリセット
             QuestionsList QuestionsList = QLService.createQuestionList(userId);
             session.setAttribute("QuestionsList", QuestionsList); // 問題文
 
@@ -105,7 +105,10 @@ class QuestionController {
     }
 
     @PostMapping("/next")
-    public String nextQuestion(HttpSession session, Model model, @RequestParam String action) throws IOException {
+    // required = false:チェックがない時はNullになる
+    public String nextQuestion(HttpSession session, Model model,
+            @RequestParam String action,
+            @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices) throws IOException {
         String userId = (String) session.getAttribute("userId");
         int nextNo = (Integer) session.getAttribute("qNo");
         // ログイン情報が無ければログイン画面へ
@@ -114,20 +117,25 @@ class QuestionController {
             return "redirect:/login";
         }
 
+        // 選択した解答をuser_answersに書込む
+        UAService.setUserAnswer(selectedChoices, nextNo, userId);
+
         if (action.equals("back"))
             nextNo--;
         else
             nextNo++;
 
         try {
-            QuestionsList QuestionsList = (QuestionsList) session.getAttribute("QuestionsList");
-            QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), nextNo);
-            List filesPath = QLService.setFilesPath(QuestionsList, nextNo);
+            QuestionsList QuestionsList = (QuestionsList) session.getAttribute("QuestionsList"); // セッションからリスト取得
+            QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), nextNo); // 問題Noの情報を格納
+            List filesPath = QLService.setFilesPath(QuestionsList, nextNo); // 問題文を格納
+            List<String> NoSelectedChoices = UAService.getSelectedChoices(userId, nextNo);
 
             session.setAttribute("DQ", DisplayQuestion); // 表示問題
             session.setAttribute("qNo", nextNo); // No
             session.setAttribute("filesPath", filesPath);
             model.addAttribute("DQ", DisplayQuestion);
+            model.addAttribute("NSC", NoSelectedChoices); // 問題Noでチェックしたデータ
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");

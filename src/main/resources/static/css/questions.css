@@ -4,6 +4,16 @@
     overflow-y: auto;
 }
 
+.fileDisplay {
+    border: 1px solid #ccc;         /* 枠線 */
+    padding: 10px;                  /* 内側余白 */
+    width: 600px;                   /* 幅 */
+    height: 300px;                  /* 高さ */
+    overflow: auto;                 /* あふれたらスクロール */
+    background-color: #f9f9f9;      /* 背景色（任意） */
+    border-radius: 8px;             /* 角丸（任意） */
+}
+
 .checkbox{
     display: flex;
     align-items: flex-start; /* 上揃えにする */
@@ -22,4 +32,8 @@
     justify-content: center; /* または space-between/space-around */
     gap: 20px; /* ボタン間のスペース */
     margin-top: 4px;
+}
+
+#text-1, #text-2 {
+    font-size: 16px;
 }

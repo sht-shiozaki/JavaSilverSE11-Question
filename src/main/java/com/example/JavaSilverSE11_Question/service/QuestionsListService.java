@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.JavaSilverSE11_Question.entity.QuestionsList;
 import com.example.JavaSilverSE11_Question.entity.QuestionsListItem;
+import com.example.JavaSilverSE11_Question.entity.UserAnswer;
 import com.example.JavaSilverSE11_Question.repository.QuestionsListRepository;
+import com.example.JavaSilverSE11_Question.repository.UserAnswerRepository;
 
 @Service
 public class QuestionsListService {
@@ -24,6 +26,9 @@ public class QuestionsListService {
 
     @Autowired
     private QuestionsListRepository questionsListRepository;
+
+    @Autowired
+    private UserAnswerRepository userAnswerRepository;
 
     // 問題リスト作成
     public QuestionsList createQuestionList(String userId) {
@@ -35,6 +40,20 @@ public class QuestionsListService {
 
         // 問題文の保存
         questionsListRepository.save(questionsList); // Repository側でもentityをimportすること
+        // 回答に問題番号と答えを保存
+        List<UserAnswer> updatedAnswers = new ArrayList<>();
+        for (QuestionsListItem item : items) {
+            UserAnswer ua = new UserAnswer();
+            ua.setUserId(userId);
+            ua.setQuestionId(item.getQuestionId());
+            ua.setNo(item.getNo());
+            ua.setAnswered(false);
+            ua.setChoiceId(null); // 初期状態で未選択
+
+            updatedAnswers.add(ua);
+        }
+
+        userAnswerRepository.saveAll(updatedAnswers); // DB保存
         return questionsList;
     }
 
