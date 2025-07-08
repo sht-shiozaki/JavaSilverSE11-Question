@@ -9,37 +9,44 @@
     <body class="mainHeader">
         <!-- headerのフラグメント作成⇒他のHTMLで使用できるようにする -->
 	    <div th:replace="header :: Header"></div>
-        <div class="question" th:if="${questionList != null}">
-            <div th:with="QNo=${session.qNo},QList=${#lists.find(questionList.items, i -> i.no == T(Long).parseLong(QNo))}"> <!-- #lists.find(...) の構文 -->
-                <div class="questionArea">
-                    <!-- 問題No-->
-                    <h3 th:text="'問 ' + ${QNo}"></h3>
-                    <!-- ファイル名表示 -->
-                    <div th:if="${session.filesPath != null}">
-                        <pre id="files" th:each="file : ${session.filesPath}" th:text="${file}"></pre> <!-- <pre> タグでインデント・改行などを保ったまま表示 -->
-                    </div>
-                </div>
-
-                <div class="selectArea">
-                    <ul>
-                        <li th:each="text : ${QList.choicesText}" th:text="${text}"></li>
-                    </ul>
+        <div class="question" th:if="${DQ != null}">
+            <div class="questionArea1">
+                <!-- 問題No-->
+                <h3 th:text="'問 ' + ${session.qNo}"></h3>
+                <!-- ファイル名表示 -->
+                <div th:if="${session.filesPath != null}">
+                    <p>次のコードがあります</p>
+                    <pre id="files" th:each="file : ${session.filesPath}" th:text="${file}"></pre>
                 </div>
             </div>
 
-            <div class="NextBackArea">
-                <div class="BackQuestion">
-                    <form action="#" th:action="@{/main/Back}" method="post">
-                        <input type="hidden" name="userId" th:value="${userId}" />
-                        <button type="submit">戻る</button>
-                    </form>
-                </div>
-                <div class="NextQuestion">
-                    <form action="#" th:action="@{/main/Next}" method="post">
-                        <input type="hidden" name="userId" th:value="${userId}" />
-                        <button type="submit">次へ</button>
-                    </form>
-                </div>
+            <div class="questionArea2">
+                <pre th:text="${DQ.question}"></pre>  <!-- <pre> タグでインデント・改行などを保ったまま表示 -->
+            </div>
+
+            <div class="selectArea">
+                <form th:action="@{/question/next}" method="post">
+                    <input type="hidden" name="userId" th:value="${userId}" />
+                    <div class="choice">
+                        <ul style="list-style-type: none; padding-left: 0;">
+                        <li th:each="choice : ${DQ.choicesText}">
+                            <label class="choice-label">
+                                <input class="checkbox" type="checkbox" name="selectedChoices" th:value="${choice.sNo}" />
+                                <span th:text="${choice.text}" style="white-space: pre-wrap;"></span>
+                            </label>
+                        </li>
+                        </ul>
+                    </div>
+
+                    <div class="NextBackArea">
+                        <div class="BackQuestion">
+                            <button type="submit" name="action" th:value="back">戻る</button>
+                        </div>
+                        <div class="NextQuestion">
+                            <button type="submit" name="action" th:value="next">次へ</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </body>

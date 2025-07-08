@@ -29,20 +29,23 @@ public class QuestionsListItem {
     @Column(nullable = false) // 問題文
     private String question;
 
-    @Transient
-    @Column(nullable = false) // 選択文（複数）
+    @Transient // 選択文（複数）
     private List<ChoicesDTO> choicesText;
 
     @Column(nullable = false) // 解答（,区切り）
     private String answer;
 
-    @Column(nullable = false) // ファイル名（,区切り）
+    @Column() // ファイル名（,区切り）
     private String fileName;
 
     @ManyToOne // 親子関係
     @JoinColumn(name = "question_list_id") // FK QuestionsList.idに紐付け
     private QuestionsList questionList;
 
+    @Column(name = "no")
+    private Integer no;
+
+    // getter.setter
     public Long getId() {
         return id;
     }
@@ -97,5 +100,13 @@ public class QuestionsListItem {
 
     public void setQuestionList(QuestionsList questionList) {
         this.questionList = questionList;
+    }
+
+    public Integer getNo() {
+        return no;
+    }
+
+    public void setNo(Integer no) {
+        this.no = no;
     }
 }

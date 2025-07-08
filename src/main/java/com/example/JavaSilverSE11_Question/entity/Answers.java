@@ -11,10 +11,10 @@ import jakarta.persistence.Table;
 public class Answers {
 
     @Id
-    @Column(nullable = false)
+    @Column(name = "ano", nullable = false)
     private String aNo; // answerNo
 
-    @Column(nullable = false) // 正解
+    @Column(nullable = false) // 正解（,区切り）
     private String answer;
 
     @Column(nullable = false) // questionID

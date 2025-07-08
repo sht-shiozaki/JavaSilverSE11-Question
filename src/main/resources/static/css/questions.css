@@ -4,6 +4,19 @@
     overflow-y: auto;
 }
 
+.checkbox{
+    display: flex;
+    align-items: flex-start; /* 上揃えにする */
+    margin-top: 7px;
+}
+
+.choice-label {
+    display: flex;
+    align-items: flex-start; /* 上揃えにする */
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
 .NextBackArea {
     display: flex;
     justify-content: center; /* または space-between/space-around */

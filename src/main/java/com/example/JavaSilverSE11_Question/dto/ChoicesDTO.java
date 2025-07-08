@@ -7,8 +7,13 @@ public class ChoicesDTO {
 
     public ChoicesDTO(String sNo, String text) {
         this.sNo = sNo;
-        this.text = text;
+        this.text = text.replace("\\n", "\n");
     }
+
+    // @Override
+    // public String toString() {
+    // return this.text; // 表示したいフィールド名
+    // }
 
     // getter,setter
     public String getsNo() {

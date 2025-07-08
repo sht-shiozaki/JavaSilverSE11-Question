@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,14 +41,13 @@ public class QuestionsListService {
     public List setFilesPath(QuestionsList questionsList, int qNo) throws IOException {
         List<String> files = new ArrayList<>();
 
-        // qNo は QuestionsListItem の id と比較（Long型なのでint→Long変換）
-        Long targetId = Long.valueOf(qNo);
+        System.out.println(questionsList.getItems());
 
         String fileName = questionsList.getItems().stream()
-                .filter(item -> item.getId().equals(targetId))
+                .filter(item -> item.getNo() != null && item.getNo().equals(qNo))
                 .map(QuestionsListItem::getFileName)
                 .findFirst()
-                .orElse(null); // 空ならNull
+                .orElse(""); // Nullなら""
 
         if (fileName != null && !fileName.isEmpty()) {
             String[] splitFiles = fileName.split(","); // カンマ区切りで分割してリストに格納
@@ -59,5 +59,14 @@ public class QuestionsListService {
             }
         }
         return files;
+    }
+
+    public QuestionsListItem setDisplayQuestion(List<QuestionsListItem> questionsList, int qNo) {
+        for (QuestionsListItem item : questionsList) {
+            if (item.getNo() == qNo) {
+                return item;
+            }
+        }
+        throw new NoSuchElementException("No matching question found for No: " + qNo);
     }
 }

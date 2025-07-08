@@ -11,14 +11,14 @@ import jakarta.persistence.Table;
 public class Choices {
 
     @Id
-    @Column(nullable = false) // selectNo
+    @Column(name = "sno", nullable = false) // selectNo
     private String sNo;
 
     @Column(nullable = false) // 選択文の内容
     private String text;
 
-    @Column(nullable = false) // questionID
-    private String qID;
+    @Column(name = "qID", nullable = false) // questionID
+    private String qid;
 
     // --- getter/setter ---
     public String getsNo() {
@@ -37,11 +37,11 @@ public class Choices {
         this.text = text;
     }
 
-    public String getqID() {
-        return qID;
+    public String getQid() {
+        return qid;
     }
 
-    public void setqID(String qID) {
-        this.qID = qID;
+    public void setQid(String qid) {
+        this.qid = qid;
     }
 }

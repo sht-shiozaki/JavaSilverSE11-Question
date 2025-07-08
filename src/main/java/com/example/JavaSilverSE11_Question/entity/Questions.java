@@ -14,7 +14,7 @@ public class Questions {
     @Column(nullable = false) // questionID
     private String qID;
 
-    @Column // javaファイル名
+    @Column(name = "filename") // javaファイル名
     private String fileName;
 
     @Column(nullable = false) // 問題文
