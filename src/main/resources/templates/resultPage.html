@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>JavaSilverSE11</title>
+        <link th:href="@{/css/header.css}" rel="stylesheet">
+    </head>
+    <body class="mainHeader">
+        <!-- headerのフラグメント作成⇒他のHTMLで使用できるようにする -->
+	    <div th:replace="header :: Header"></div>
+
+        <h1>結果</h1>
+        <h3 th:text="|${session.resultCount} / 80問 : 正答率 ${session.Accuracy}%|"></h3>
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>問</th>
+                    <th>回答</th>
+                    <th>答え</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="result : ${resultList}">
+                    <td th:text="${result.no}">1</td>
+                    <td th:text="${result.choiceId}">A</td>
+                    <td th:text="${result.result ? '○' : '×'}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

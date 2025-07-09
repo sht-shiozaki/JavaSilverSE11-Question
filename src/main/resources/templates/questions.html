@@ -27,7 +27,7 @@
             </div>
 
             <div class="selectArea">
-                <form th:action="@{/question/next}" method="post" onsubmit="saveTimeToHidden()">
+                <form id="mainForm" th:action="@{/question/next}" method="post" onsubmit="saveTimeToHidden()">
                     <input type="hidden" name="userId" th:value="${userId}" />
                     <input type="hidden" name="remainingTime" id="remainingTimeField" />
                     <div class="choice">
@@ -55,7 +55,8 @@
             </div>
         </div>
         <script th:inline="javascript">
-            window.remainingSeconds = [[${remainingTime}]]; // サーバーから受け取った残り秒数
+            window.remainingSeconds = [[${session.remainingTime}]]; // サーバーから受け取った残り秒数
+            window.answeredCount = [[${session.answeredCount}]];
         </script>
         <script th:src="@{/js/header.js}" defer></script>
     </body>

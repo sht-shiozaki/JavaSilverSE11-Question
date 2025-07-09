@@ -29,6 +29,9 @@ public class UserAnswer {
     @Column(name = "no") // 表示No（）
     private Integer no;
 
+    @Column(nullable = false) // 成否
+    private boolean result;
+
     // --- getter/setter ---
 
     public String getUserId() {
@@ -69,5 +72,13 @@ public class UserAnswer {
 
     public void setNo(Integer no) {
         this.no = no;
+    }
+
+    public boolean isResult() {
+        return result;
+    }
+
+    public void setResult(boolean result) {
+        this.result = result;
     }
 }

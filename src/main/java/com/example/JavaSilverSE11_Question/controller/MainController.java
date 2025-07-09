@@ -121,11 +121,14 @@ class QuestionController {
 
         // 選択した解答をuser_answersに書込む
         UAService.setUserAnswer(selectedChoices, nextNo, userId);
+        int answeredCount = UAService.getAnsweredCount(userId); // 回答数取得
+        session.setAttribute("answeredCount", answeredCount);
 
-        if (action.equals("back"))
+        if (action.equals("back")) {
             nextNo--;
-        else
+        } else {
             nextNo++;
+        }
 
         try {
             QuestionsList QuestionsList = (QuestionsList) session.getAttribute("QuestionsList"); // セッションからリスト取得
@@ -134,19 +137,46 @@ class QuestionController {
             List<String> NoSelectedChoices = UAService.getSelectedChoices(userId, nextNo);
 
             session.setAttribute("DQ", DisplayQuestion); // 表示問題
-            session.setAttribute("qNo", nextNo); // No
+            session.setAttribute("qNo", nextNo); // No設定
             session.setAttribute("filesPath", filesPath);
             model.addAttribute("DQ", DisplayQuestion);
             model.addAttribute("NSC", NoSelectedChoices); // 問題Noでチェックしたデータ
 
             // タイマー引継ぎ
-            // Integer remaining = (Integer) session.getAttribute("remainingTime");
-            model.addAttribute("remainingTime", remainingTime);
+            session.setAttribute("remainingTime", remainingTime);
             model.addAttribute("currentPage", "question");
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
         }
         return "questions";
+    }
+
+    // 試験終了
+    @PostMapping("/end")
+    // required = false:チェックがない時はNullになる
+    public String endQuestion(HttpSession session, Model model,
+            @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices) throws Exception {
+        String userId = (String) session.getAttribute("userId");
+        int nextNo = (Integer) session.getAttribute("qNo");
+        // ログイン情報が無ければログイン画面へ
+        if (userId == null) {
+            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
+            return "redirect:/login";
+        }
+
+        try {
+            // 選択した解答をuser_answersに書込む
+            UAService.setUserAnswer(selectedChoices, nextNo, userId);
+
+            // userの解答判定
+            List<UserAnswer> userAnswerResult = UAService.getResult(session, userId);
+            model.addAttribute("resultList", userAnswerResult);
+            model.addAttribute("currentPage", "home");// ヘッダー
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
+        }
+        return "resultPage";
     }
 }

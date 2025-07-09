@@ -34,12 +34,13 @@
             <div th:case="'question'" class="headerRight">
                 <!-- タイマー表示 -->
                 <div id="timer" class="timer">残り時間: <span id="timeDisplay">--:--</span></div>
-                <button type="submit" class="headerButton" id="todo_button" onclick="openTodoDialog(this)">終了</button>
+
+                <form id="endForm" th:action="@{/question/end}" method="post" onsubmit="return ExamCompleted()">
+                    <input type="submit" value="終了" class="headerButton" id="end_button">
+                </form>
+
                 <form th:action="@{/main/logout}" method="post">
                     <input type="submit" value="ログアウト" class="logoutButton">
-                </form>
-                <form th:action="@{/mypage}" method="get">
-                    <input type="submit" value="マイページ" class="headerButton">
                 </form>
             </div>
         </div>

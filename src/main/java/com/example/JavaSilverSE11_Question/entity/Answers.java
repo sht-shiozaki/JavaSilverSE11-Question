@@ -21,11 +21,11 @@ public class Answers {
     private String qID;
 
     // --- getter/setter ---
-    public String getaNo() {
+    public String getAnswerNo() {
         return aNo;
     }
 
-    public void setaNo(String aNo) {
+    public void setAnswerNo(String aNo) {
         this.aNo = aNo;
     }
 
@@ -37,11 +37,11 @@ public class Answers {
         this.answer = answer;
     }
 
-    public String getqID() {
+    public String getQuestionID() {
         return qID;
     }
 
-    public void setqID(String qID) {
+    public void setQuestionID(String qID) {
         this.qID = qID;
     }
 }

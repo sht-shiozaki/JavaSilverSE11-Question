@@ -20,5 +20,30 @@ function saveTimeToHidden() {
     document.getElementById("remainingTimeField").value = remainingSeconds;
 }
 
+let answeredCount = Number(window.answeredCount);
+function ExamCompleted() {
+  const endForm = document.getElementById("endForm");
+  const mainForm = document.getElementById("mainForm");
+  // チェックされた選択肢の数を数える
+  const checked = mainForm.querySelectorAll('input[name="selectedChoices"]:checked');
+
+  // 1つでもチェックされていれば answeredCount++
+  if (checked.length > 0) answeredCount += 1;
+
+  // 全問解答済みの判定
+  if (answeredCount >= 3){
+    checked.forEach(cd => {
+      const choiceHidden = document.createElement("input");
+      choiceHidden.type = "hidden";
+      choiceHidden.name = "selectedChoices";
+      choiceHidden.value = cd.value;
+      endForm.appendChild(choiceHidden);
+    });
+    return true;
+  }else {
+    alert("未回答の問題があります。");
+    return false;
+  }
+}
 const timerInterval = setInterval(updateTimer, 1000);
 window.addEventListener("DOMContentLoaded", updateTimer);

@@ -29,4 +29,15 @@ public interface UserAnswerRepository extends JpaRepository<UserAnswer, UserAnsw
 
     @Query("SELECT u FROM UserAnswer u WHERE u.userId = :userId AND u.no = :nextNo")
     UserAnswer findByUserIdAndNo(@Param("userId") String userId, @Param("nextNo") int nextNo);
+
+    @Query("SELECT COUNT(u) FROM UserAnswer u WHERE u.userId = :userId AND u.answered = true")
+    int countCorrectAnswers(@Param("userId") String userId);
+
+    List<UserAnswer> findByUserId(String userId);
+
+    @Transactional
+    @Modifying // UPDATEには必要
+    @Query("UPDATE UserAnswer u SET u.result = true WHERE u.userId = :userId AND u.questionId = :questionId")
+    void updateByResult(@Param("userId") String userId, @Param("questionId") String questionId);
+
 }

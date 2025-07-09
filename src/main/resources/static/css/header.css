@@ -1,8 +1,7 @@
 body.mainHeader {
-  padding-top: 20px; /* ヘッダー分の余白 */
+  padding-top: 30px; /* ヘッダー分の余白 */
   display: block; /* または flex なら flex-direction: column を指定 */
 }
-
 
 .header{
 	background-color: rgb(224 247 250);
