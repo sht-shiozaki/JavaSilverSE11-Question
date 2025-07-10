@@ -4,18 +4,20 @@
         <meta charset="UTF-8">
         <title>JavaSilverSE11</title>
         <link th:href="@{/css/header.css}" rel="stylesheet">
+        <link th:href="@{/css/resultPage.css}" rel="stylesheet">
+    </head>
     </head>
     <body class="mainHeader">
         <!-- headerのフラグメント作成⇒他のHTMLで使用できるようにする -->
 	    <div th:replace="header :: Header"></div>
 
-        <h1>結果</h1>
+        <h1>試験結果</h1>
         <h3 th:text="|${session.resultCount} / 80問 : 正答率 ${session.Accuracy}%|"></h3>
 
         <table border="1">
             <thead>
                 <tr>
-                    <th>問</th>
+                    <th>問題</th>
                     <th>回答</th>
                     <th>答え</th>
                 </tr>
@@ -23,8 +25,8 @@
             <tbody>
                 <tr th:each="result : ${resultList}">
                     <td th:text="${result.no}">1</td>
-                    <td th:text="${result.choiceId}">A</td>
-                    <td th:text="${result.result ? '○' : '×'}"></td>
+                    <td th:text="${result.charChoices}">A</td>
+                    <td th:text="${result.result ? '○' : '× : ' + result.answer}"></td>
                 </tr>
             </tbody>
         </table>

@@ -32,6 +32,9 @@ public class UserAnswer {
     @Column(nullable = false) // 成否
     private boolean result;
 
+    @Column(nullable = false) // チェック
+    private boolean checked;
+
     // --- getter/setter ---
 
     public String getUserId() {
@@ -80,5 +83,13 @@ public class UserAnswer {
 
     public void setResult(boolean result) {
         this.result = result;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 }

@@ -39,10 +39,49 @@
     margin-bottom: 4px;
 }
 
+#text-1 {
+    margin-top: 4px;
+}
+
 #files {
     font-size: 12px;
 }
 
 ul {
     margin-top: 4px;
+}
+
+/* 右側画面 */
+.questionTableArea {
+    position: fixed;
+    top: 70px;
+    right: 50px;
+    width: 250px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.questionTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.questionTable th, .questionTable td {
+    border: 1px solid #ccc;
+    padding: 4px;
+    text-align: center;
+}
+
+.currentQuestion {
+    font-weight: bold;
+    color: red;
+}
+
+.checkMark {
+    color: green;
+    font-weight: bold;
 }

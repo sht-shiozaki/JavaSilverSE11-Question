@@ -7,7 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.IIOException;
 
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.JavaSilverSE11_Question.dto.UserAnswerDTO;
 import com.example.JavaSilverSE11_Question.entity.QuestionsList;
 import com.example.JavaSilverSE11_Question.entity.QuestionsListItem;
 import com.example.JavaSilverSE11_Question.entity.UserAnswer;
@@ -87,6 +90,15 @@ class QuestionController {
             QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), qNo);
             List filesPath = QLService.setFilesPath(QuestionsList, qNo);
 
+            Map<Integer, Boolean> answeredMap = new HashMap<>();
+            Map<Integer, Boolean> checkedMap = new HashMap<>();
+            for (int i = 1; i <= 80; i++) {
+                answeredMap.put(i, false); // すべて未回答として初期化
+                checkedMap.put(i, false); // すべて未チェックとして初期化
+            }
+            model.addAttribute("answeredMap", answeredMap);
+            model.addAttribute("checkedMap", checkedMap);
+
             session.setAttribute("DQ", DisplayQuestion);
             session.setAttribute("answer", answer); // 回答用紙
             session.setAttribute("qNo", qNo); // 初回問題No(1)
@@ -110,7 +122,10 @@ class QuestionController {
     public String nextQuestion(HttpSession session, Model model,
             @RequestParam int remainingTime,
             @RequestParam String action,
-            @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices) throws IOException {
+            @RequestParam("characters") List<String> characters,
+            @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices,
+            @RequestParam(name = "checked", required = false) boolean checked // チェックボックスから取得
+    ) throws IOException {
         String userId = (String) session.getAttribute("userId");
         int nextNo = (Integer) session.getAttribute("qNo");
         // ログイン情報が無ければログイン画面へ
@@ -119,8 +134,8 @@ class QuestionController {
             return "redirect:/login";
         }
 
-        // 選択した解答をuser_answersに書込む
-        UAService.setUserAnswer(selectedChoices, nextNo, userId);
+        UAService.setUserAnswer(selectedChoices, nextNo, userId); // 選択した解答をuser_answersに書込む
+        UAService.setCheckFlag(userId, nextNo, checked); // チェック状態の保存
         int answeredCount = UAService.getAnsweredCount(userId); // 回答数取得
         session.setAttribute("answeredCount", answeredCount);
 
@@ -136,6 +151,9 @@ class QuestionController {
             List filesPath = QLService.setFilesPath(QuestionsList, nextNo); // 問題文を格納
             List<String> NoSelectedChoices = UAService.getSelectedChoices(userId, nextNo);
 
+            Map<Integer, Boolean> answeredMap = UAService.getAnsweredMap(userId); // No => true/false
+            Map<Integer, Boolean> checkedMap = UAService.getCheckedMap(userId); // No => true/false
+
             session.setAttribute("DQ", DisplayQuestion); // 表示問題
             session.setAttribute("qNo", nextNo); // No設定
             session.setAttribute("filesPath", filesPath);
@@ -145,6 +163,8 @@ class QuestionController {
             // タイマー引継ぎ
             session.setAttribute("remainingTime", remainingTime);
             model.addAttribute("currentPage", "question");
+            model.addAttribute("answeredMap", answeredMap);
+            model.addAttribute("checkedMap", checkedMap);
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
@@ -170,7 +190,7 @@ class QuestionController {
             UAService.setUserAnswer(selectedChoices, nextNo, userId);
 
             // userの解答判定
-            List<UserAnswer> userAnswerResult = UAService.getResult(session, userId);
+            List<UserAnswerDTO> userAnswerResult = UAService.getResult(session, userId);
             model.addAttribute("resultList", userAnswerResult);
             model.addAttribute("currentPage", "home");// ヘッダー
         } catch (Exception e) {

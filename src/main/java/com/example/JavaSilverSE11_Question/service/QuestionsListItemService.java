@@ -2,6 +2,7 @@ package com.example.JavaSilverSE11_Question.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,7 @@ public class QuestionsListItemService {
             List<ChoicesDTO> choices = choiceRepository.findByQid(qId)
                     .stream() // List<Choices> などのコレクションを Java のストリームに変換
                     .map(c -> new ChoicesDTO(c.getsNo(), c.getText())) // sNoとtextをペアで格納⇒DTO定義
+                    .sorted(Comparator.comparing(ChoicesDTO::getsNo)) // getsNo 昇順ソート
                     .collect(Collectors.toList()); // .collect():どうまとめるか定義、Collectors.toList: Stream の結果を List にまとめる
 
             // 解答を取得

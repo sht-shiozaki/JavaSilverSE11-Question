@@ -32,12 +32,16 @@
                     <input type="hidden" name="remainingTime" id="remainingTimeField" />
                     <div class="choice">
                         <ul style="list-style-type: none; padding-left: 0;">
-                        <li th:each="choice : ${DQ.choicesText}">
-                            <label class="choice-label">
-                                <input class="checkbox" type="checkbox" name="selectedChoices"
-                                       th:value="${choice.sNo}"
-                                       th:checked="${NSC != null and NSC.contains(choice.sNo)}"/>
-                                <span th:text="${choice.text}" style="white-space: pre-wrap;"></span>
+                            <li th:each="choice, iterStat  : ${DQ.choicesText}">
+                                <label class="choice-label">
+                                    <input class="checkbox" type="checkbox" name="selectedChoices"
+                                    th:value="${choice.sNo}"
+                                    th:checked="${NSC != null and NSC.contains(choice.sNo)}"/>
+                                <span>
+                                    <span th:text="${T(java.lang.Character).toString(65 + iterStat.index)} + '.'"></span>
+                                    <input type="hidden" name="characters" id="Character" th:value="${T(java.lang.Character).toString(65 + iterStat.index)}"/>
+                                    <span th:text="${choice.text}" style="white-space: pre-wrap;"></span>
+                                </span>
                             </label>
                         </li>
                         </ul>
@@ -50,10 +54,40 @@
                         <div class="NextQuestion">
                             <button type="submit" name="action" th:value="next" th:if="${session.qNo != 80}">次へ</button>
                         </div>
+                        <label>
+                            <input type="checkbox" name="checked" th:checked="${checkedMap[session.qNo]} ? true : false" />
+                            チェックする
+                        </label>
                     </div>
                 </form>
             </div>
         </div>
+
+        <!-- 画面右側の問題一覧 -->
+        <div class="questionTableArea">
+            <table class="questionTable">
+                <thead>
+                    <tr>
+                        <th>回答済み</th>
+                        <th>問題No</th>
+                        <th>チェック</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="no : ${#numbers.sequence(1, 80)}">
+                        <td th:text="${answeredMap[no] != null and answeredMap[no]} ? '✔' : ''"></td>
+                        <td>
+                            <a th:href="@{/question/move(qNo=${no})}" th:text="${no}"
+                            th:classappend="${no == session.qNo} ? 'currentQuestion' : ''"></a>
+                        </td>
+                        <td>
+                            <span th:if="${checkedMap[no]}" class="checkMark">☑</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <script th:inline="javascript">
             window.remainingSeconds = [[${session.remainingTime}]]; // サーバーから受け取った残り秒数
             window.answeredCount = [[${session.answeredCount}]];
