@@ -24,11 +24,15 @@
             </thead>
             <tbody>
                 <tr th:each="result : ${resultList}">
-                    <td th:text="${result.no}">1</td>
+                    <td>
+                        <a href="#" th:onclick="'checkNo(' + ${result.no} + '); return false;'" th:text="${result.no}"></a>
+                    </td>
                     <td th:text="${result.charChoices}">A</td>
                     <td th:text="${result.result ? '○' : '× : ' + result.answer}"></td>
                 </tr>
             </tbody>
         </table>
+        <a id="homeLink" th:href="@{/main/home}">ホームへ戻る</a>
     </body>
+    <script th:src="@{/js/checkedAnswer.js}" defer></script>
 </html>

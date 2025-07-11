@@ -90,15 +90,15 @@ class QuestionController {
             QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), qNo);
             List filesPath = QLService.setFilesPath(QuestionsList, qNo);
 
-            Map<Integer, Boolean> answeredMap = new HashMap<>();
-            Map<Integer, Boolean> checkedMap = new HashMap<>();
+            Map<String, Boolean> answeredMap = new HashMap<>();
+            Map<String, Boolean> checkedMap = new HashMap<>();
             for (int i = 1; i <= 80; i++) {
-                answeredMap.put(i, false); // すべて未回答として初期化
-                checkedMap.put(i, false); // すべて未チェックとして初期化
+                answeredMap.put(String.valueOf(i), false); // すべて未回答として初期化
+                checkedMap.put(String.valueOf(i), false); // すべて未チェックとして初期化
             }
-            model.addAttribute("answeredMap", answeredMap);
-            model.addAttribute("checkedMap", checkedMap);
 
+            session.setAttribute("answeredMap", answeredMap);
+            session.setAttribute("checkedMap", checkedMap);
             session.setAttribute("DQ", DisplayQuestion);
             session.setAttribute("answer", answer); // 回答用紙
             session.setAttribute("qNo", qNo); // 初回問題No(1)
@@ -124,7 +124,7 @@ class QuestionController {
             @RequestParam String action,
             @RequestParam("characters") List<String> characters,
             @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices,
-            @RequestParam(name = "checked", required = false) boolean checked // チェックボックスから取得
+            @RequestParam(name = "checkNo", required = false) boolean checkNo // チェックボックスから取得
     ) throws IOException {
         String userId = (String) session.getAttribute("userId");
         int nextNo = (Integer) session.getAttribute("qNo");
@@ -135,7 +135,7 @@ class QuestionController {
         }
 
         UAService.setUserAnswer(selectedChoices, nextNo, userId); // 選択した解答をuser_answersに書込む
-        UAService.setCheckFlag(userId, nextNo, checked); // チェック状態の保存
+        UAService.setCheckFlag(userId, nextNo, checkNo); // チェック状態の保存
         int answeredCount = UAService.getAnsweredCount(userId); // 回答数取得
         session.setAttribute("answeredCount", answeredCount);
 
@@ -151,8 +151,8 @@ class QuestionController {
             List filesPath = QLService.setFilesPath(QuestionsList, nextNo); // 問題文を格納
             List<String> NoSelectedChoices = UAService.getSelectedChoices(userId, nextNo);
 
-            Map<Integer, Boolean> answeredMap = UAService.getAnsweredMap(userId); // No => true/false
-            Map<Integer, Boolean> checkedMap = UAService.getCheckedMap(userId); // No => true/false
+            Map<String, Boolean> answeredMap = UAService.getAnsweredMap(userId); // No => true/false
+            Map<String, Boolean> checkedMap = UAService.getCheckedMap(userId); // No => true/false
 
             session.setAttribute("DQ", DisplayQuestion); // 表示問題
             session.setAttribute("qNo", nextNo); // No設定
@@ -163,8 +163,59 @@ class QuestionController {
             // タイマー引継ぎ
             session.setAttribute("remainingTime", remainingTime);
             model.addAttribute("currentPage", "question");
-            model.addAttribute("answeredMap", answeredMap);
-            model.addAttribute("checkedMap", checkedMap);
+            session.setAttribute("answeredMap", answeredMap);
+            session.setAttribute("checkedMap", checkedMap);
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
+        }
+        return "questions";
+    }
+
+    @PostMapping("/move")
+    // required = false:チェックがない時はNullになる
+    public String moveQuestion(HttpSession session, Model model,
+            @RequestParam int remainingTime,
+            @RequestParam int qNo,
+            @RequestParam("characters") List<String> characters,
+            @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices,
+            @RequestParam(name = "checkNo", required = false) boolean checkNo // チェックボックスから取得
+    ) throws IOException {
+        String userId = (String) session.getAttribute("userId");
+        int nextNo = (Integer) session.getAttribute("qNo");
+        // ログイン情報が無ければログイン画面へ
+        if (userId == null) {
+            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
+            return "redirect:/login";
+        }
+
+        UAService.setUserAnswer(selectedChoices, nextNo, userId); // 選択した解答をuser_answersに書込む
+        UAService.setCheckFlag(userId, nextNo, checkNo); // チェック状態の保存
+        int answeredCount = UAService.getAnsweredCount(userId); // 回答数取得
+        session.setAttribute("answeredCount", answeredCount);
+
+        nextNo = qNo; // qNo:遷移先Noを設定
+
+        try {
+            QuestionsList QuestionsList = (QuestionsList) session.getAttribute("QuestionsList"); // セッションからリスト取得
+            QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), nextNo); // 問題Noの情報を格納
+            List filesPath = QLService.setFilesPath(QuestionsList, nextNo); // 問題文を格納
+            List<String> NoSelectedChoices = UAService.getSelectedChoices(userId, nextNo);
+
+            Map<String, Boolean> answeredMap = UAService.getAnsweredMap(userId); // No => true/false
+            Map<String, Boolean> checkedMap = UAService.getCheckedMap(userId); // No => true/false
+
+            session.setAttribute("DQ", DisplayQuestion); // 表示問題
+            session.setAttribute("qNo", nextNo); // No設定
+            session.setAttribute("filesPath", filesPath);
+            model.addAttribute("DQ", DisplayQuestion);
+            model.addAttribute("NSC", NoSelectedChoices); // 問題Noでチェックしたデータ
+
+            // タイマー引継ぎ
+            session.setAttribute("remainingTime", remainingTime);
+            model.addAttribute("currentPage", "question");
+            session.setAttribute("answeredMap", answeredMap);
+            session.setAttribute("checkedMap", checkedMap);
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
@@ -187,7 +238,8 @@ class QuestionController {
 
         try {
             // 選択した解答をuser_answersに書込む
-            UAService.setUserAnswer(selectedChoices, nextNo, userId);
+            if (selectedChoices != null)
+                UAService.setUserAnswer(selectedChoices, nextNo, userId);
 
             // userの解答判定
             List<UserAnswerDTO> userAnswerResult = UAService.getResult(session, userId);
@@ -198,5 +250,37 @@ class QuestionController {
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
         }
         return "resultPage";
+    }
+
+    // 試験終了
+    @PostMapping("/check")
+    // required = false:チェックがない時はNullになる
+    public String checkQuestion(HttpSession session, Model model,
+            @RequestParam int qNo) throws Exception {
+        String userId = (String) session.getAttribute("userId");
+        // ログイン情報が無ければログイン画面へ
+        if (userId == null) {
+            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
+            return "redirect:/login";
+        }
+
+        try {
+            QuestionsList QuestionsList = (QuestionsList) session.getAttribute("QuestionsList"); // セッションからリスト取得
+            QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), qNo); // 問題Noの情報を格納
+            List filesPath = QLService.setFilesPath(QuestionsList, qNo); // 問題文を格納
+            List<String> NoSelectedChoices = UAService.getSelectedChoices(userId, qNo);
+
+            List<String> highlightList = QLService.getAnswers(QuestionsList, qNo); // 色を変えたい解答
+            session.setAttribute("highlightList", highlightList);
+            session.setAttribute("DQ", DisplayQuestion); // 表示問題
+            session.setAttribute("filesPath", filesPath);
+            model.addAttribute("DQ", DisplayQuestion);
+            model.addAttribute("NSC", NoSelectedChoices); // 問題Noでチェックしたデータ
+            model.addAttribute("currentPage", "home");
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
+        }
+        return "checkedAnswer";
     }
 }

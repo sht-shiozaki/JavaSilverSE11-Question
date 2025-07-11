@@ -125,25 +125,27 @@ public class UserAnswerService {
     public void setCheckFlag(String userId, int qNo, boolean checked) {
         UserAnswer ua = userAnswerRepository.findByUserIdAndNo(userId, qNo);
         if (ua != null) {
-            ua.setChecked(checked); // ← Entityに `checked` フィールド追加しておくこと
-            userAnswerRepository.save(ua);
+            ua.setChecked(checked);
+            userAnswerRepository.save(ua); // user_answer更新
         }
     }
 
-    public Map<Integer, Boolean> getAnsweredMap(String userId) {
+    // キー：No、値：true/falseで回答済みをMapに格納しHTMLへsessionで連携
+    public Map<String, Boolean> getAnsweredMap(String userId) {
         List<UserAnswer> list = userAnswerRepository.findByUserId(userId);
-        Map<Integer, Boolean> map = new HashMap<>();
+        Map<String, Boolean> map = new HashMap<>();
         for (UserAnswer ua : list) {
-            map.put(ua.getNo(), ua.getChoiceId() != null && !ua.getChoiceId().isEmpty());
+            map.put(String.valueOf(ua.getNo()), ua.getChoiceId() != null && !ua.getChoiceId().isEmpty());
         }
         return map;
     }
 
-    public Map<Integer, Boolean> getCheckedMap(String userId) {
+    // キー：No、値：true/falseで問題一覧でチェックを付けたかMapに格納しHTMLへsessionで連携
+    public Map<String, Boolean> getCheckedMap(String userId) {
         List<UserAnswer> list = userAnswerRepository.findByUserId(userId);
-        Map<Integer, Boolean> map = new HashMap<>();
+        Map<String, Boolean> map = new HashMap<>();
         for (UserAnswer ua : list) {
-            map.put(ua.getNo(), ua.isChecked()); // ← boolean isChecked()
+            map.put(String.valueOf(ua.getNo()), ua.isChecked()); // ← boolean isChecked()
         }
         return map;
     }

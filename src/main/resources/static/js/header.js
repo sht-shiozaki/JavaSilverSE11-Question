@@ -20,6 +20,7 @@ function saveTimeToHidden() {
     document.getElementById("remainingTimeField").value = remainingSeconds;
 }
 
+//　終了ボタン押下時のチェック全回答済みチェック
 let answeredCount = Number(window.answeredCount);
 function ExamCompleted() {
   const endForm = document.getElementById("endForm");

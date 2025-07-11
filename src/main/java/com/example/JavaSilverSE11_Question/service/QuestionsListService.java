@@ -60,8 +60,6 @@ public class QuestionsListService {
     public List setFilesPath(QuestionsList questionsList, int qNo) throws IOException {
         List<String> files = new ArrayList<>();
 
-        System.out.println(questionsList.getItems());
-
         String fileName = questionsList.getItems().stream()
                 .filter(item -> item.getNo() != null && item.getNo().equals(qNo))
                 .map(QuestionsListItem::getFileName)
@@ -87,5 +85,23 @@ public class QuestionsListService {
             }
         }
         throw new NoSuchElementException("No matching question found for No: " + qNo);
+    }
+
+    public List<String> getAnswers(QuestionsList questionsList, int qNo) {
+        List<String> answers = new ArrayList<>();
+
+        String ans = questionsList.getItems().stream()
+                .filter(item -> item.getNo() != null && item.getNo().equals(qNo))
+                .map(QuestionsListItem::getAnswer)
+                .findFirst()
+                .orElse(""); // Nullなら""
+
+        if (ans != null && !ans.isEmpty()) {
+            String[] ANS = ans.split(","); // カンマ区切りで分割してリストに格納
+            for (String a : ANS) {
+                answers.add(a);
+            }
+        }
+        return answers;
     }
 }

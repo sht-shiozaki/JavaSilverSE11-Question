@@ -9,14 +9,21 @@ body {
 }
 
 /* h1, h3 の余白調整（必要なら） */
-h1, h3 {
+h1 {
     text-align: center;
-    margin-top: 20px;
+    margin:55px auto 0px auto;
+}
+
+h3 {
+    text-align: center;
+    margin:20px auto 0px auto;
 }
 
 /* テーブルの横幅を 80% にし、中央寄せ */
 table {
     width: 80%;           /* ← 任意で固定幅にする場合は 600px 等でも可 */
+    height: 55Vh;                  /* 高さ */
+    overflow: auto;                 /* あふれたらスクロール */
     margin: 20px auto;    /* 上下に余白、左右中央寄せ */
     border-collapse: collapse;
     text-align: center;
@@ -31,4 +38,10 @@ th, td {
 /* ヘッダー行を目立たせる（任意） */
 thead {
     background-color: #f2f2f2;
+}
+
+#homeLink {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
 }

@@ -63,7 +63,6 @@ public class QuestionsListItemService {
             item.setQuestionList(questionList);
             itemList.add(item);
         }
-
         return itemList;
     }
 }

@@ -55,7 +55,7 @@
                             <button type="submit" name="action" th:value="next" th:if="${session.qNo != 80}">次へ</button>
                         </div>
                         <label>
-                            <input type="checkbox" name="checked" th:checked="${checkedMap[session.qNo]} ? true : false" />
+                            <input type="checkbox" name="checkNo" th:checked="${session.checkedMap[session.qNo]} ? true : false" />
                             チェックする
                         </label>
                     </div>
@@ -75,23 +75,23 @@
                 </thead>
                 <tbody>
                     <tr th:each="no : ${#numbers.sequence(1, 80)}">
-                        <td th:text="${answeredMap[no] != null and answeredMap[no]} ? '✔' : ''"></td>
+                        <td th:text="${session.answeredMap[no.toString()] != null and session.answeredMap[no.toString()]} ? '✔' : ''"></td>
                         <td>
-                            <a th:href="@{/question/move(qNo=${no})}" th:text="${no}"
-                            th:classappend="${no == session.qNo} ? 'currentQuestion' : ''"></a>
+                            <a href="#" th:onclick="'moveToQuestion(' + ${no} + '); return false;'" th:text="${no}"></a>
                         </td>
-                        <td>
-                            <span th:if="${checkedMap[no]}" class="checkMark">☑</span>
-                        </td>
+                        <td th:text="${session.checkedMap[no.toString()] != null and session.checkedMap[no.toString()]} ? '有':''"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <script th:inline="javascript">
+            let checkFlag = [[${session.checkedMap}]];
+            console.log(checkFlag);
             window.remainingSeconds = [[${session.remainingTime}]]; // サーバーから受け取った残り秒数
             window.answeredCount = [[${session.answeredCount}]];
         </script>
         <script th:src="@{/js/header.js}" defer></script>
+        <script th:src="@{/js/question.js}" defer></script>
     </body>
 </html>

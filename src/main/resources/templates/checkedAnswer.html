@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>JavaSilverSE11</title>
+        <link th:href="@{/css/header.css}" rel="stylesheet">
+        <link th:href="@{/css/questions.css}" rel="stylesheet">
+    </head>
+    <body class="mainHeader">
+        <!-- headerのフラグメント作成⇒他のHTMLで使用できるようにする -->
+	    <div th:replace="header :: Header"></div>
+        <div class="question" th:if="${DQ != null}">
+            <div class="questionArea1">
+                <!-- 問題No-->
+                <h3 th:text="'問 ' + ${session.qNo}"></h3>
+                <!-- ファイル名表示 -->
+                <div th:if="${session.filesPath != null and !#lists.isEmpty(session.filesPath)}">
+                    <p id="text-1">次のコードがあります</p>
+                    <div class="fileDisplay">
+                        <pre id="files" th:each="file : ${session.filesPath}" th:text="${file}"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="questionArea2">
+                <pre id="text-2" th:text="${DQ.question}"></pre>  <!-- <pre> タグでインデント・改行などを保ったまま表示 -->
+            </div>
+
+            <div class="selectArea">
+                <form id="mainForm" th:action="@{/question/end}" method="post">
+                    <div class="choice">
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li th:each="choice, iterStat  : ${DQ.choicesText}">
+                                <label class="choice-label">
+                                    <input class="checkbox" type="checkbox" name="selectedChoices"
+                                    th:value="${choice.sNo}"
+                                    th:checked="${NSC != null and NSC.contains(choice.sNo)}" disabled />
+                                <span th:with="optionChar=${T(java.lang.Character).toString(65 + iterStat.index)},
+                                    isHighlighted=${session.highlightList != null and session.highlightList.contains(optionChar)}">
+                                    <span th:text="${optionChar + '.'}"
+                                        th:style="${isHighlighted} ? 'color:red' : ''">
+                                    </span>
+                                    <input type="hidden" name="characters" id="Character" th:value="${optionChar}" />
+                                    <span th:text="${choice.text}"
+                                        th:style="${isHighlighted} ? 'color:red' : ''">
+                                        style="white-space: pre-wrap;"></span>
+                                </span>
+                            </label>
+                        </li>
+                        </ul>
+                    </div>
+                    <input type="submit" value="戻る">
+                </form>
+            </div>
+        </div>
+
+        <script th:src="@{/js/header.js}" defer></script>
+        <script th:src="@{/js/question.js}" defer></script>
+    </body>
+</html>
