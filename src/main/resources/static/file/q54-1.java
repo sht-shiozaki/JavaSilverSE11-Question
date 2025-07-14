@@ -1,3 +1,0 @@
-public method foo() throws FooException {
-	...
-}
