@@ -70,7 +70,7 @@ public class QuestionsListService {
             String[] splitFiles = fileName.split(","); // カンマ区切りで分割してリストに格納
             for (String f : splitFiles) {
                 f = f.trim(); // 前後の空白も削除
-                Path path = Paths.get("src/main/resources/static/file/" + f);
+                Path path = Paths.get("C:/SHTproject/JavaSilverSE11-Question/local_questions/" + f + ".java");
                 String content = Files.readString(path);
                 files.add(content);
             }

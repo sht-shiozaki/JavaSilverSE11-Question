@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# 問題文ファイルを無視する
+/local_problems/

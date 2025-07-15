@@ -95,6 +95,8 @@ class QuestionController {
             for (int i = 1; i <= 80; i++) {
                 answeredMap.put(String.valueOf(i), false); // すべて未回答として初期化
                 checkedMap.put(String.valueOf(i), false); // すべて未チェックとして初期化
+                if (i == 80)
+                    System.err.println("完了");
             }
 
             session.setAttribute("answeredMap", answeredMap);
@@ -106,7 +108,7 @@ class QuestionController {
             model.addAttribute("DQ", DisplayQuestion);
 
             // タイマー設定
-            int initialTime = 600; // 例：10分（600秒）
+            int initialTime = 10800; // 例：60分（3600秒）
             session.setAttribute("remainingTime", initialTime);
             model.addAttribute("remainingTime", initialTime);
             model.addAttribute("currentPage", "question");

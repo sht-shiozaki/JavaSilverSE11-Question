@@ -1,3 +1,14 @@
+body {
+    zoom: 90%;
+}
+
+.question {
+    display: flex;        /* 横並びにする親 */
+    margin-left: 10px;
+    gap: 20px;
+    align-items: flex-start;
+}
+
 .questionArea {
     display: flex;
     justify-content: center;
@@ -7,17 +18,38 @@
 .fileDisplay {
     border: 1px solid #ccc;         /* 枠線 */
     padding: 10px;                  /* 内側余白 */
-    width: 600px;                   /* 幅 */
-    height: 300px;                  /* 高さ */
+    width: 40vw;                   /* 幅 */
+    height: 75vh;                  /* 高さ */
     overflow: auto;                 /* あふれたらスクロール */
     background-color: #f9f9f9;      /* 背景色（任意） */
     border-radius: 8px;             /* 角丸（任意） */
+    flex-direction: column;  /* 縦に並べる */
+    gap: 8px;                 /* 各preの間の余白 */
+}
+
+.fileDisplay pre {
+    display: inline-block;      /* 横幅を内容に合わせる */
+    min-width: 39vw;
+    border: 2px solid #000000;        /* 四角い枠線 */
+    margin-top: 0px;
+    margin-bottom: 4px;          /* 各ファイルの下に余白 */
+    padding: 8px 4px;
+    white-space: pre;           /* 改行・インデントを保つ（デフォルトでもOK） */
+}
+
+.center {
+    width: 40%;
+    margin-top: 55px;
+    display: flex;
+    flex-direction: column;  /* ← これで内部は縦並びに */
 }
 
 .checkbox{
     display: flex;
     align-items: flex-start; /* 上揃えにする */
-    margin-top: 7px;
+    margin-top: 5px;
+    height: 15px;
+    width: auto;
 }
 
 .choice-label {
@@ -34,6 +66,17 @@
     margin-top: 4px;
 }
 
+.NextBackArea button {
+    font-size: 14px;      /* 文字サイズ */
+    padding: 4px 8px;   /* 上下・左右の余白 */
+    border-radius: 6px;   /* 角を丸く */
+}
+
+.NextBackArea input[type="checkbox"] {
+    transform: scale(1.5);    /* サイズを1.5倍に拡大 */
+    margin-right: 8px;        /* ラベルとの間に余白 */
+}
+
 #text-1, #text-2 {
     font-size: 16px;
     margin-bottom: 4px;
@@ -43,20 +86,28 @@
     margin-top: 4px;
 }
 
+#text-2 {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.4;  /* 行間の調整 */
+}
+
 #files {
-    font-size: 12px;
+    font-size: 16px;
+    line-height: 1.8;  /* 行間の調整 */
 }
 
 ul {
     margin-top: 4px;
+    font-size: 16px;
 }
 
 /* 右側画面 */
 .questionTableArea {
     position: fixed;
-    top: 70px;
-    right: 50px;
-    width: 250px;
+    top: 95px;
+    right: 10px;
+    width: 160px;
     max-height: 70vh;
     overflow-y: auto;
     background-color: #f8f8f8;
