@@ -33,4 +33,4 @@ build/
 .vscode/
 
 # 問題文ファイルを無視する
-/local_problems/
+/local_questions/
