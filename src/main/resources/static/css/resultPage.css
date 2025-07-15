@@ -41,7 +41,8 @@ thead {
 }
 
 #homeLink {
+    font-size: 20px;
     display: block;
     text-align: center;
-    margin-top: 8px;
+    margin: 12px auto 24px auto;
 }

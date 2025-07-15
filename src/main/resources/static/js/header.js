@@ -49,6 +49,8 @@ function ExamCompleted() {
 
 let timerInterval;
 window.addEventListener("DOMContentLoaded", () => {
+  if (useTimer) {
     updateTimer(); // DOM構築後に初回タイマー表示を即実行
     timerInterval = setInterval(updateTimer, 1000); // 1秒ごとに更新開始
+  }
 });

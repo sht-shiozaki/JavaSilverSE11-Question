@@ -28,14 +28,14 @@
                 </div>
 
                 <div class="selectArea">
-                    <form id="mainForm" th:action="@{/question/end}" method="post">
+                    <form id="mainForm" th:action="@{/question/qa}" method="post">
                         <div class="choice">
                             <ul style="list-style-type: none; padding-left: 0;">
                                 <li th:each="choice, iterStat  : ${DQ.choicesText}">
                                     <label class="choice-label">
                                         <input class="checkbox" type="checkbox" name="selectedChoices"
                                         th:value="${choice.sNo}"
-                                        th:checked="${NSC != null and NSC.contains(choice.sNo)}" disabled />
+                                        th:checked="${NSC != null and NSC.contains(choice.sNo)}" />
                                     <span th:with="optionChar=${T(java.lang.Character).toString(65 + iterStat.index)},
                                         isHighlighted=${session.highlightList != null and session.highlightList.contains(optionChar)}">
                                         <span th:text="${optionChar + '.'}"
@@ -50,12 +50,14 @@
                             </li>
                             </ul>
                         </div>
-                        <input type="submit" value="戻る">
+                        <input type="submit" value="答え">
                     </form>
                 </div>
             </div>
         </div>
-
+        <script th:inline="javascript">
+            const useTimer = [[${session.useTimer}]];
+        </script>
         <script th:src="@{/js/header.js}" defer></script>
         <script th:src="@{/js/question.js}" defer></script>
     </body>

@@ -23,45 +23,45 @@
             </div>
 
             <div class="center">
-            <div class="questionArea2">
-                <pre id="text-2" th:text="${DQ.question}"></pre>  <!-- <pre> タグでインデント・改行などを保ったまま表示 -->
-            </div>
+                <div class="questionArea2">
+                    <pre id="text-2" th:text="${DQ.question}"></pre>  <!-- <pre> タグでインデント・改行などを保ったまま表示 -->
+                </div>
 
-            <div class="selectArea">
-                <form id="mainForm" th:action="@{/question/next}" method="post" onsubmit="saveTimeToHidden()">
-                    <input type="hidden" name="userId" th:value="${userId}" />
-                    <input type="hidden" name="remainingTime" id="remainingTimeField" />
-                    <div class="choice">
-                        <ul style="list-style-type: none; padding-left: 0;">
-                            <li th:each="choice, iterStat  : ${DQ.choicesText}">
-                                <label class="choice-label">
-                                    <input class="checkbox" type="checkbox" name="selectedChoices"
-                                    th:value="${choice.sNo}"
-                                    th:checked="${NSC != null and NSC.contains(choice.sNo)}"/>
-                                <span>
-                                    <span th:text="${T(java.lang.Character).toString(65 + iterStat.index)} + '.'"></span>
-                                    <input type="hidden" name="characters" id="Character" th:value="${T(java.lang.Character).toString(65 + iterStat.index)}"/>
-                                    <span th:text="${choice.text}" style="white-space: pre-wrap;"></span>
-                                </span>
+                <div class="selectArea">
+                    <form id="mainForm" th:action="@{/question/next}" method="post" onsubmit="saveTimeToHidden()">
+                        <input type="hidden" name="userId" th:value="${userId}" />
+                        <input type="hidden" name="remainingTime" id="remainingTimeField" />
+                        <div class="choice">
+                            <ul style="list-style-type: none; padding-left: 0;">
+                                <li th:each="choice, iterStat  : ${DQ.choicesText}">
+                                    <label class="choice-label">
+                                        <input class="checkbox" type="checkbox" name="selectedChoices"
+                                        th:value="${choice.sNo}"
+                                        th:checked="${NSC != null and NSC.contains(choice.sNo)}"/>
+                                    <span>
+                                        <span th:text="${T(java.lang.Character).toString(65 + iterStat.index)} + '.'"></span>
+                                        <input type="hidden" name="characters" id="Character" th:value="${T(java.lang.Character).toString(65 + iterStat.index)}"/>
+                                        <span th:text="${choice.text}" style="white-space: pre-wrap;"></span>
+                                    </span>
+                                </label>
+                            </li>
+                            </ul>
+                        </div>
+
+                        <div class="NextBackArea">
+                            <div class="BackQuestion">
+                                <button type="submit" name="action" th:value="back" th:if="${session.qNo != 1}">戻る</button>
+                            </div>
+                            <div class="NextQuestion">
+                                <button type="submit" name="action" th:value="next" th:if="${session.qNo != 80}">次へ</button>
+                            </div>
+                            <label>
+                                <input type="checkbox" name="checkNo" th:checked="${session.checkedMap[session.qNo]} ? true : false" />
+                                チェックする
                             </label>
-                        </li>
-                        </ul>
-                    </div>
-
-                    <div class="NextBackArea">
-                        <div class="BackQuestion">
-                            <button type="submit" name="action" th:value="back" th:if="${session.qNo != 1}">戻る</button>
                         </div>
-                        <div class="NextQuestion">
-                            <button type="submit" name="action" th:value="next" th:if="${session.qNo != 80}">次へ</button>
-                        </div>
-                        <label>
-                            <input type="checkbox" name="checkNo" th:checked="${session.checkedMap[session.qNo]} ? true : false" />
-                            チェックする
-                        </label>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -88,8 +88,9 @@
         </div>
 
         <script th:inline="javascript">
+            const useTimer = [[${session.useTimer}]];
+            console.log(userTimer);
             let checkFlag = [[${session.checkedMap}]];
-            console.log(checkFlag);
             window.remainingSeconds = [[${session.remainingTime}]]; // サーバーから受け取った残り秒数
             window.answeredCount = [[${session.answeredCount}]];
         </script>

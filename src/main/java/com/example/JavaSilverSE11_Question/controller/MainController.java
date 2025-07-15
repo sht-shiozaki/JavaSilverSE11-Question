@@ -72,8 +72,11 @@ class QuestionController {
     @Autowired
     private QuestionsListService QLService;
 
-    @PostMapping("/mockExam")
-    public String firstQuestion(HttpSession session, Model model, @RequestParam String No) throws IOException {
+    @PostMapping("/start")
+    public String firstQuestion(HttpSession session,
+            Model model,
+            @RequestParam String No,
+            @RequestParam String action) throws IOException {
         String userId = (String) session.getAttribute("userId");
         int qNo = Integer.parseInt(No);
         // ログイン情報が無ければログイン画面へ
@@ -90,33 +93,37 @@ class QuestionController {
             QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), qNo);
             List filesPath = QLService.setFilesPath(QuestionsList, qNo);
 
-            Map<String, Boolean> answeredMap = new HashMap<>();
-            Map<String, Boolean> checkedMap = new HashMap<>();
-            for (int i = 1; i <= 80; i++) {
-                answeredMap.put(String.valueOf(i), false); // すべて未回答として初期化
-                checkedMap.put(String.valueOf(i), false); // すべて未チェックとして初期化
-                if (i == 80)
-                    System.err.println("完了");
+            if (action.equals("exam")) {
+                Map<String, Boolean> answeredMap = new HashMap<>();
+                Map<String, Boolean> checkedMap = new HashMap<>();
+                for (int i = 1; i <= 80; i++) {
+                    answeredMap.put(String.valueOf(i), false); // すべて未回答として初期化
+                    checkedMap.put(String.valueOf(i), false); // すべて未チェックとして初期化
+                    if (i == 80)
+                        System.err.println("完了");
+                }
+                session.setAttribute("answeredMap", answeredMap);
+                session.setAttribute("checkedMap", checkedMap);
+                session.setAttribute("remainingTime", 10800); // タイマー設定
             }
 
-            session.setAttribute("answeredMap", answeredMap);
-            session.setAttribute("checkedMap", checkedMap);
-            session.setAttribute("DQ", DisplayQuestion);
+            // session.setAttribute("DQ", DisplayQuestion);
             session.setAttribute("answer", answer); // 回答用紙
             session.setAttribute("qNo", qNo); // 初回問題No(1)
             session.setAttribute("filesPath", filesPath);
             model.addAttribute("DQ", DisplayQuestion);
-
-            // タイマー設定
-            int initialTime = 10800; // 例：60分（3600秒）
-            session.setAttribute("remainingTime", initialTime);
-            model.addAttribute("remainingTime", initialTime);
             model.addAttribute("currentPage", "question");
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
         }
-        return "questions";
+        if (action.equals("exam")) { // questions or questionAnswer
+            session.setAttribute("useTimer", true);
+            return "questions";
+        } else {
+            session.setAttribute("useTimer", false);
+            return "questionAnswer";
+        }
     }
 
     @PostMapping("/next")

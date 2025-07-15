@@ -11,14 +11,17 @@
 	    <div th:replace="header :: Header"></div>
 
         <h1>JavaSilverSE11</h1>
-        <form action="#" th:action="@{/question/mockExam}" method="post">
+        <form action="#" th:action="@{/question/start}" method="post">
             <input type="hidden" name="userId" th:value="${userId}" />
             <input type="hidden" name="No" th:value="1" />
+            <input type="hidden" name="action" th:value="exam" />
             <button type="submit">模擬試験</button>
         </form>
 
-        <form action="#" th:action="@{/question/qa}" method="post">
+        <form action="#" th:action="@{/question/start}" method="post">
             <input type="hidden" name="userId" th:value="${userId}" />
+            <input type="hidden" name="No" th:value="1" />
+            <input type="hidden" name="action" th:value="qa" />
             <button type="submit">一問一答</button>
         </form>
     </body>
