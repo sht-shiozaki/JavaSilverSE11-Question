@@ -76,7 +76,7 @@ class QuestionController {
     public String firstQuestion(HttpSession session,
             Model model,
             @RequestParam String No,
-            @RequestParam String action) throws IOException {
+            @RequestParam String mode) throws IOException {
         String userId = (String) session.getAttribute("userId");
         int qNo = Integer.parseInt(No);
         // ログイン情報が無ければログイン画面へ
@@ -93,7 +93,7 @@ class QuestionController {
             QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), qNo);
             List filesPath = QLService.setFilesPath(QuestionsList, qNo);
 
-            if (action.equals("exam")) {
+            if (mode.equals("exam")) {
                 Map<String, Boolean> answeredMap = new HashMap<>();
                 Map<String, Boolean> checkedMap = new HashMap<>();
                 for (int i = 1; i <= 80; i++) {
@@ -105,23 +105,26 @@ class QuestionController {
                 session.setAttribute("answeredMap", answeredMap);
                 session.setAttribute("checkedMap", checkedMap);
                 session.setAttribute("remainingTime", 10800); // タイマー設定
+            } else {
+                List<String> highlightList = QLService.getAnswers(QuestionsList, qNo); // nextNoが次の問題Noの為、表示問題Noに変更
+                session.setAttribute("highlightList", highlightList); // 問題NOの回答をリストで格納
             }
 
-            // session.setAttribute("DQ", DisplayQuestion);
             session.setAttribute("answer", answer); // 回答用紙
             session.setAttribute("qNo", qNo); // 初回問題No(1)
             session.setAttribute("filesPath", filesPath);
             model.addAttribute("DQ", DisplayQuestion);
-            model.addAttribute("currentPage", "question");
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
         }
-        if (action.equals("exam")) { // questions or questionAnswer
+        if (mode.equals("exam")) { // questions or questionAnswer
             session.setAttribute("useTimer", true);
+            model.addAttribute("currentPage", "exam"); // ヘッダーの選択
             return "questions";
         } else {
             session.setAttribute("useTimer", false);
+            model.addAttribute("currentPage", "qa");
             return "questionAnswer";
         }
     }
@@ -130,9 +133,9 @@ class QuestionController {
     // required = false:チェックがない時はNullになる
     public String nextQuestion(HttpSession session, Model model,
             @RequestParam int remainingTime,
+            @RequestParam String mode,
             @RequestParam String action,
-            @RequestParam("characters") List<String> characters,
-            @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices,
+            @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices, // required:必須項目。デフォルトはtrueで省略可
             @RequestParam(name = "checkNo", required = false) boolean checkNo // チェックボックスから取得
     ) throws IOException {
         String userId = (String) session.getAttribute("userId");
@@ -143,42 +146,60 @@ class QuestionController {
             return "redirect:/login";
         }
 
-        UAService.setUserAnswer(selectedChoices, nextNo, userId); // 選択した解答をuser_answersに書込む
-        UAService.setCheckFlag(userId, nextNo, checkNo); // チェック状態の保存
-        int answeredCount = UAService.getAnsweredCount(userId); // 回答数取得
-        session.setAttribute("answeredCount", answeredCount);
+        if (mode.equals("exam")) {
+            // 現在の回答Noでの処理
+            UAService.setUserAnswer(selectedChoices, nextNo, userId); // 選択した解答をuser_answersに書込む
+            UAService.setCheckFlag(userId, nextNo, checkNo); // チェック状態の保存
+            int answeredCount = UAService.getAnsweredCount(userId); // 回答数取得
+            session.setAttribute("answeredCount", answeredCount); // 終了ボタンの判定時に使用
+        }
 
         if (action.equals("back")) {
             nextNo--;
-        } else {
+        } else if (action.equals("next")) {
             nextNo++;
+        } else {
+            if (nextNo == 80)
+                nextNo = 1; // Noリセット
+            else
+                nextNo++; // 一問一答
         }
 
         try {
             QuestionsList QuestionsList = (QuestionsList) session.getAttribute("QuestionsList"); // セッションからリスト取得
-            QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), nextNo); // 問題Noの情報を格納
-            List filesPath = QLService.setFilesPath(QuestionsList, nextNo); // 問題文を格納
-            List<String> NoSelectedChoices = UAService.getSelectedChoices(userId, nextNo);
+            QuestionsListItem DisplayQuestion = QLService.setDisplayQuestion(QuestionsList.getItems(), nextNo); // 次の問題情報を格納
+            List filesPath = QLService.setFilesPath(QuestionsList, nextNo); // 次の問題Fileを格納
+            List<String> NoSelectedChoices = UAService.getSelectedChoices(userId, nextNo); // チェックした選択肢を保存
 
-            Map<String, Boolean> answeredMap = UAService.getAnsweredMap(userId); // No => true/false
-            Map<String, Boolean> checkedMap = UAService.getCheckedMap(userId); // No => true/false
+            if (mode.equals("exam")) {
+                Map<String, Boolean> answeredMap = UAService.getAnsweredMap(userId); // No => true/false
+                Map<String, Boolean> checkedMap = UAService.getCheckedMap(userId); // No => true/false
+                session.setAttribute("answeredMap", answeredMap); // 回答済みリスト
+                session.setAttribute("checkedMap", checkedMap); // チェックリスト
+                session.setAttribute("remainingTime", remainingTime); // タイマー引継ぎ
+            } else {
+                List<String> highlightList = QLService.getAnswers(QuestionsList, nextNo); // nextNoが次の問題Noの為、表示問題Noに変更
+                session.setAttribute("highlightList", highlightList); // 問題NOの回答をリストで格納
+            }
 
-            session.setAttribute("DQ", DisplayQuestion); // 表示問題
             session.setAttribute("qNo", nextNo); // No設定
-            session.setAttribute("filesPath", filesPath);
-            model.addAttribute("DQ", DisplayQuestion);
-            model.addAttribute("NSC", NoSelectedChoices); // 問題Noでチェックしたデータ
+            session.setAttribute("filesPath", filesPath); // File設定
+            model.addAttribute("DQ", DisplayQuestion); // 表示問題情報
+            model.addAttribute("NSC", NoSelectedChoices); // 今まで選択した選択肢リスト
 
-            // タイマー引継ぎ
-            session.setAttribute("remainingTime", remainingTime);
-            model.addAttribute("currentPage", "question");
-            session.setAttribute("answeredMap", answeredMap);
-            session.setAttribute("checkedMap", checkedMap);
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("questionList", "ファイルの読み込みに失敗しました。");
         }
-        return "questions";
+        if (mode.equals("exam")) { // questions or questionAnswer
+            session.setAttribute("useTimer", true); // タイマーON
+            model.addAttribute("currentPage", "exam"); // ヘッダーの選択
+            return "questions";
+        } else {
+            session.setAttribute("useTimer", false);
+            model.addAttribute("currentPage", "qa");
+            return "questionAnswer";
+        }
     }
 
     @PostMapping("/move")
@@ -186,7 +207,7 @@ class QuestionController {
     public String moveQuestion(HttpSession session, Model model,
             @RequestParam int remainingTime,
             @RequestParam int qNo,
-            @RequestParam("characters") List<String> characters,
+            // @RequestParam("characters") List<String> characters,
             @RequestParam(name = "selectedChoices", required = false) List<String> selectedChoices,
             @RequestParam(name = "checkNo", required = false) boolean checkNo // チェックボックスから取得
     ) throws IOException {
@@ -222,7 +243,7 @@ class QuestionController {
 
             // タイマー引継ぎ
             session.setAttribute("remainingTime", remainingTime);
-            model.addAttribute("currentPage", "question");
+            model.addAttribute("currentPage", "exam");
             session.setAttribute("answeredMap", answeredMap);
             session.setAttribute("checkedMap", checkedMap);
         } catch (IOException e) {

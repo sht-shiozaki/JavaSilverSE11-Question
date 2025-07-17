@@ -30,12 +30,23 @@
                 </form>
             </div>
 
-            <!-- questionの場合 -->
-            <div th:case="'question'" class="headerRight">
+            <!-- examの場合 -->
+            <div th:case="'exam'" class="headerRight">
                 <!-- タイマー表示 -->
                 <div id="timer" class="timer">残り時間: <span id="timeDisplay">--:--</span></div>
 
                 <form id="endForm" th:action="@{/question/end}" method="post" onsubmit="return ExamCompleted()">
+                    <input type="submit" value="終了" class="headerButton" id="end_button">
+                </form>
+
+                <form th:action="@{/main/logout}" method="post">
+                    <input type="submit" value="ログアウト" class="logoutButton">
+                </form>
+            </div>
+
+            <!-- qaの場合 -->
+            <div th:case="'qa'" class="headerRight">
+                <form id="endForm" th:action="@{/main/home}" method="get">
                     <input type="submit" value="終了" class="headerButton" id="end_button">
                 </form>
 

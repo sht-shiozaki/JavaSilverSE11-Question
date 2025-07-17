@@ -38,13 +38,9 @@
                                         th:checked="${NSC != null and NSC.contains(choice.sNo)}" disabled />
                                     <span th:with="optionChar=${T(java.lang.Character).toString(65 + iterStat.index)},
                                         isHighlighted=${session.highlightList != null and session.highlightList.contains(optionChar)}">
-                                        <span th:text="${optionChar + '.'}"
-                                            th:style="${isHighlighted} ? 'color:red' : ''">
-                                        </span>
+                                        <span th:text="${optionChar + '.'}" th:style="${isHighlighted} ? 'color:red' : ''"></span>
                                         <input type="hidden" name="characters" id="Character" th:value="${optionChar}" />
-                                        <span th:text="${choice.text}"
-                                            th:style="${isHighlighted} ? 'color:red' : ''">
-                                            style="white-space: pre-wrap;"></span>
+                                        <span th:text="${choice.text}" th:style="${isHighlighted} ? 'color:red' : ''"></span>
                                     </span>
                                 </label>
                             </li>

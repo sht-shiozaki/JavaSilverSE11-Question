@@ -29,7 +29,7 @@
 
                 <div class="selectArea">
                     <form id="mainForm" th:action="@{/question/next}" method="post" onsubmit="saveTimeToHidden()">
-                        <input type="hidden" name="userId" th:value="${userId}" />
+                        <input type="hidden" name="mode" th:value="exam" />
                         <input type="hidden" name="remainingTime" id="remainingTimeField" />
                         <div class="choice">
                             <ul style="list-style-type: none; padding-left: 0;">
@@ -41,7 +41,7 @@
                                     <span>
                                         <span th:text="${T(java.lang.Character).toString(65 + iterStat.index)} + '.'"></span>
                                         <input type="hidden" name="characters" id="Character" th:value="${T(java.lang.Character).toString(65 + iterStat.index)}"/>
-                                        <span th:text="${choice.text}" style="white-space: pre-wrap;"></span>
+                                        <span th:text="${choice.text}" ></span>
                                     </span>
                                 </label>
                             </li>
@@ -89,9 +89,9 @@
 
         <script th:inline="javascript">
             const useTimer = [[${session.useTimer}]];
-            console.log(userTimer);
             let checkFlag = [[${session.checkedMap}]];
             window.remainingSeconds = [[${session.remainingTime}]]; // サーバーから受け取った残り秒数
+            console.log(window.remainingSeconds);
             window.answeredCount = [[${session.answeredCount}]];
         </script>
         <script th:src="@{/js/header.js}" defer></script>

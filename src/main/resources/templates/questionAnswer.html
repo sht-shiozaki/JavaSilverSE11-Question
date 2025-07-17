@@ -28,37 +28,43 @@
                 </div>
 
                 <div class="selectArea">
-                    <form id="mainForm" th:action="@{/question/qa}" method="post">
+                    <form id="mainForm" th:action="@{/question/next}" method="post">
+                        <input type="hidden" name="mode" th:value="qa" />
+                        <input type="hidden" name="action" th:value="qa" />
+                        <input type="hidden" name="remainingTime" th:value="0" />
                         <div class="choice">
                             <ul style="list-style-type: none; padding-left: 0;">
                                 <li th:each="choice, iterStat  : ${DQ.choicesText}">
                                     <label class="choice-label">
                                         <input class="checkbox" type="checkbox" name="selectedChoices"
-                                        th:value="${choice.sNo}"
-                                        th:checked="${NSC != null and NSC.contains(choice.sNo)}" />
-                                    <span th:with="optionChar=${T(java.lang.Character).toString(65 + iterStat.index)},
-                                        isHighlighted=${session.highlightList != null and session.highlightList.contains(optionChar)}">
-                                        <span th:text="${optionChar + '.'}"
-                                            th:style="${isHighlighted} ? 'color:red' : ''">
+                                            th:value="${choice.sNo}"
+                                            th:checked="${NSC != null and NSC.contains(choice.sNo)}" />
+                                        <span class="char-text" 
+                                            th:with="optionChar=${T(java.lang.Character).toString(65 + iterStat.index)}" 
+                                            th:attr="data-option=${optionChar}">
+                                            <span th:text="${optionChar + '.'}"></span>
+                                            <!-- <input type="hidden" name="characters" id="Character" th:value="${T(java.lang.Character).toString(65 + iterStat.index)}"/> -->
+                                            <span th:text="${choice.text}"></span>
                                         </span>
-                                        <input type="hidden" name="characters" id="Character" th:value="${optionChar}" />
-                                        <span th:text="${choice.text}"
-                                            th:style="${isHighlighted} ? 'color:red' : ''">
-                                            style="white-space: pre-wrap;"></span>
-                                    </span>
-                                </label>
-                            </li>
+                                    </label>
+                                </li>
                             </ul>
                         </div>
-                        <input type="submit" value="答え">
+                        <div class="buttonArea">
+                            <button id="answerButton" type="button" onclick="Answer()" style="visibility:visible">答え</button>
+                            <input id="nextButton" type="submit" value="次へ" style="visibility:hidden">
+                            <p id="result"></p>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
         <script th:inline="javascript">
             const useTimer = [[${session.useTimer}]];
+            const highlightList = [[${session.highlightList}]];
+            console.log(highlightList);
         </script>
         <script th:src="@{/js/header.js}" defer></script>
-        <script th:src="@{/js/question.js}" defer></script>
+        <script th:src="@{/js/questionAnswer.js}" defer></script>
     </body>
 </html>

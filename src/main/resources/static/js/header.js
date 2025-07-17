@@ -26,15 +26,15 @@ function ExamCompleted() {
   const endForm = document.getElementById("endForm");
   const mainForm = document.getElementById("mainForm");
   // チェックされた選択肢の数を数える
-  const checked = mainForm.querySelectorAll('input[name="selectedChoices"]:checked');
+  const checked = mainForm.querySelectorAll('input[name="selectedChoices"]:checked'); //<input type="checkbox"> 要素
 
   // 1つでもチェックされていれば answeredCount++
   if (checked.length > 0) answeredCount += 1;
 
   // 全問解答済みの判定
-  if (answeredCount >= 3){
+  if (answeredCount >= 80){
     checked.forEach(cd => {
-      const choiceHidden = document.createElement("input");
+      const choiceHidden = document.createElement("input"); // HTMLのinputを作成
       choiceHidden.type = "hidden";
       choiceHidden.name = "selectedChoices";
       choiceHidden.value = cd.value;
@@ -42,8 +42,16 @@ function ExamCompleted() {
     });
     return true;
   }else {
-    alert("未回答の問題があります。");
-    return false;
+    if (confirm("未回答の問題があります。終了しますか？")) { // confirm : アラートと違い OK/NOの2種類ボタン表示
+      checked.forEach(cd => {
+        const choiceHidden = document.createElement("input");
+        choiceHidden.type = "hidden";
+        choiceHidden.name = "selectedChoices";
+        choiceHidden.value = cd.value;
+        endForm.appendChild(choiceHidden);
+      });
+      return true;
+    } else return false;
   }
 }
 

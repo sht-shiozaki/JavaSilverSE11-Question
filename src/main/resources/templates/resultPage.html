@@ -23,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="result : ${resultList}">
+                <tr th:each="result : ${resultList}" th:style="${!result.result} ? 'background-color: #ff1800;' : ''">
                     <td>
                         <a href="#" th:onclick="'checkNo(' + ${result.no} + '); return false;'" th:text="${result.no}"></a>
                     </td>

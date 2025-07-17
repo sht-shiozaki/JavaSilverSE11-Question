@@ -59,14 +59,17 @@ body {
     margin-bottom: 10px;
 }
 
-.NextBackArea {
+.NextBackArea, .buttonArea {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
     gap: 20px; /* ボタン間のスペース */
     margin-top: 4px;
 }
 
 .NextBackArea button {
+    height: 32px;
+    width: 70px;
     font-size: 14px;      /* 文字サイズ */
     padding: 4px 8px;   /* 上下・左右の余白 */
     border-radius: 6px;   /* 角を丸く */
@@ -75,6 +78,14 @@ body {
 .NextBackArea input[type="checkbox"] {
     transform: scale(1.5);    /* サイズを1.5倍に拡大 */
     margin-right: 8px;        /* ラベルとの間に余白 */
+}
+
+.buttonArea button, .buttonArea input[type="submit"] {
+    height: 32px;
+    width: 70px;
+    font-size: 14px;      /* 文字サイズ */
+    padding: 4px 8px;   /* 上下・左右の余白 */
+    border-radius: 6px;   /* 角を丸く */
 }
 
 #text-1, #text-2 {
@@ -100,6 +111,12 @@ body {
 ul {
     margin-top: 4px;
     font-size: 16px;
+}
+
+#result {
+    font-size: 30px;
+    font-weight: bold; /* 太字 */
+    margin: 0px 0px;
 }
 
 /* 右側画面 */
