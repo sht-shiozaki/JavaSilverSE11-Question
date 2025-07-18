@@ -2,21 +2,11 @@
 package com.example.JavaSilverSE11_Question.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.IIOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Io;
-import org.springframework.data.jpa.domain.QAbstractAuditable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,17 +21,15 @@ import com.example.JavaSilverSE11_Question.entity.UserAnswer;
 import com.example.JavaSilverSE11_Question.service.UserAnswerService;
 import com.example.JavaSilverSE11_Question.service.QuestionsListService;
 
-// import com.example.JavaSilverSE11_Question.entity.TaskItem;
-// import com.example.JavaSilverSE11_Question.repository.TaskItemRepository;
-// import com.example.JavaSilverSE11_Question.service.TaskItemService;
-
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.RequestBody;
 
 // リストコントローラー
 @Controller // Spring MVCのコントローラーであることを示す
 @RequestMapping("/main") // URLの先頭部分を指定
 public class MainController {
+
+    @Autowired
+    private QuestionsListService QLService;
 
     @GetMapping("/home")
     public String showhome(HttpSession session, Model model) { // ここでsessionは既存のセッション or 新規セッションを取得
@@ -51,6 +39,7 @@ public class MainController {
             model.addAttribute("error", "ユーザー情報が見つかりませんでした");
             return "redirect:/login";
         }
+        QLService.deleteUserDate(userId);
         model.addAttribute("currentPage", "home");// ヘッダー
         return "home";
     }

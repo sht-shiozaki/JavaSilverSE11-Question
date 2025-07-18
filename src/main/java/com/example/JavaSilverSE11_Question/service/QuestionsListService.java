@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.example.JavaSilverSE11_Question.entity.QuestionsList;
@@ -29,6 +30,19 @@ public class QuestionsListService {
 
     @Autowired
     private UserAnswerRepository userAnswerRepository;
+
+    // ユーザーの問題リストを削除
+    public void deleteUserDate(String userId) {
+        List<Long> top10Ids = questionsListRepository.findTop10IdsByUserId(userId, PageRequest.of(0, 10));
+
+        List<QuestionsList> all = questionsListRepository.findAll(); // QuestionsListをentityとして取得
+
+        for (QuestionsList list : all) {
+            if (!top10Ids.contains(list.getId())) { // listやsetで使用される。含まれているかの確認
+                questionsListRepository.delete(list);
+            }
+        }
+    }
 
     // 問題リスト作成
     public QuestionsList createQuestionList(String userId) {
@@ -104,4 +118,5 @@ public class QuestionsListService {
         }
         return answers;
     }
+
 }
