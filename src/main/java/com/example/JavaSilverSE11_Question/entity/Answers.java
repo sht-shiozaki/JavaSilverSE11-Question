@@ -44,4 +44,5 @@ public class Answers {
     public void setQuestionID(String qID) {
         this.qID = qID;
     }
-}
+}/Invitation.java src/main/java/com/example/JavaSilverSE11_Question/entity/Questions.java src/main/java/com/example/JavaSilverSE11_Question/entity/QuestionsList.java src/main/java/com/example/JavaSilverSE11_Question/entity/QuestionsListItem.java src/main/java/com/example/JavaSilverSE11_Question/entity/Registry.java src/main/java/com/example/JavaSilverSE11_Question/entity/UserAnswer.java src/main/java/com/example/JavaSilverSE11_Question/entity/UserAnswerId.
+java

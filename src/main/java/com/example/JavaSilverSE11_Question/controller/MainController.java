@@ -36,7 +36,6 @@ public class MainController {
         String userId = (String) session.getAttribute("userId");
         // ログイン情報が無ければログイン画面へ
         if (userId == null) {
-            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
             return "redirect:/login";
         }
         QLService.deleteUserDate(userId);
@@ -70,7 +69,6 @@ class QuestionController {
         int qNo = Integer.parseInt(No);
         // ログイン情報が無ければログイン画面へ
         if (userId == null) {
-            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
             return "redirect:/login";
         }
 
@@ -131,7 +129,6 @@ class QuestionController {
         int nextNo = (Integer) session.getAttribute("qNo");
         // ログイン情報が無ければログイン画面へ
         if (userId == null) {
-            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
             return "redirect:/login";
         }
 
@@ -204,7 +201,6 @@ class QuestionController {
         int nextNo = (Integer) session.getAttribute("qNo");
         // ログイン情報が無ければログイン画面へ
         if (userId == null) {
-            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
             return "redirect:/login";
         }
 
@@ -251,7 +247,6 @@ class QuestionController {
         int nextNo = (Integer) session.getAttribute("qNo");
         // ログイン情報が無ければログイン画面へ
         if (userId == null) {
-            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
             return "redirect:/login";
         }
 
@@ -279,7 +274,6 @@ class QuestionController {
         String userId = (String) session.getAttribute("userId");
         // ログイン情報が無ければログイン画面へ
         if (userId == null) {
-            model.addAttribute("error", "ユーザー情報が見つかりませんでした");
             return "redirect:/login";
         }
 

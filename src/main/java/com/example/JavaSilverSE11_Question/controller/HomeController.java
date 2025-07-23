@@ -61,7 +61,7 @@ public class HomeController {
     }
 
     @PostMapping("/register")
-    public String registerUser(Registry registry, Invitation invitation, HttpSession session, Model model,
+    public String registerUser(Registry registry, Model model,
             RedirectAttributes redirectAttributes,
             @RequestParam("inviteCode") String inviteCode) {
 

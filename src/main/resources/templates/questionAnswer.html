@@ -43,7 +43,6 @@
                                             th:with="optionChar=${T(java.lang.Character).toString(65 + iterStat.index)}" 
                                             th:attr="data-option=${optionChar}">
                                             <span th:text="${optionChar + '.'}"></span>
-                                            <!-- <input type="hidden" name="characters" id="Character" th:value="${T(java.lang.Character).toString(65 + iterStat.index)}"/> -->
                                             <span th:text="${choice.text}"></span>
                                         </span>
                                     </label>
