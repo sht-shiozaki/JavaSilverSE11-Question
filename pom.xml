@@ -82,6 +82,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.example.JavaSilverSE11_Question.JavaSilverSe11QuestionApplication</mainClass>
+				</configuration>
 			</plugin>
 			<plugin> <!-- pluginsの下に記載 -->
 				<groupId>org.apache.maven.plugins</groupId>

@@ -79,7 +79,7 @@
                     <tr th:each="no : ${#numbers.sequence(1, 80)}">
                         <td th:text="${session.answeredMap[no.toString()] != null and session.answeredMap[no.toString()]} ? '✔' : ''"></td>
                         <td>
-                            <a href="#" th:onclick="'moveToQuestion(' + ${no} + '); return false;'" th:text="${no}"></a>
+                            <a href="#" th:onclick="'moveToQuestion(${no}); return false;'" th:text="${no}"></a>
                         </td>
                         <td th:text="${session.checkedMap[no.toString()] != null and session.checkedMap[no.toString()]} ? '有':''"></td>
                     </tr>
